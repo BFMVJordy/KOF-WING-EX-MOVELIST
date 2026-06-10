@@ -49,15 +49,30 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 4px;
     }
     .title      { font-size: 13px; letter-spacing: 6px; color: #cba6f7; text-transform: uppercase; text-shadow: 0 0 12px #cba6f7aa; margin-bottom: 4px; }
-    .title-main { font-size: 38px; font-weight: 700; letter-spacing: 8px; color: #fff; text-shadow: 0 0 24px #cc88ffcc, 0 0 48px #9944ccaa; margin-bottom: 24px; }
-    .row { display: flex; justify-content: center; align-items: center; gap: 10px; }
+    .title-main { font-size: 38px; font-weight: 700; letter-spacing: 8px; color: #fff; text-shadow: 0 0 24px #cc88ffcc, 0 0 48px #9944ccaa; margin-bottom: 20px; }
+
+    /* ── CLAVE: tamaño basado en la fila más ancha (7 slots) ── */
+    :root {
+      --gap: 4px;
+      --slot: min(130px, calc((100vw - 16px - var(--gap) * 6) / 7));
+    }
+
+    .row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--gap);
+      flex-wrap: nowrap; /* mantiene la forma de diamante en móvil */
+    }
+
     .slot {
-      width: 130px; height: 130px;
+      width: var(--slot);
+      height: var(--slot);
       border: 2px solid rgba(180, 100, 255, 0.55);
-      border-radius: 10px;
+      border-radius: 8px;
       background: rgba(30, 0, 60, 0.55);
       backdrop-filter: blur(4px);
       cursor: pointer;
@@ -87,33 +102,40 @@
     .slot .name {
       position: relative;
       z-index: 2;
-      font-size: 11px;
+      font-size: clamp(6px, 1.2vw, 11px);
       font-weight: 700;
-      letter-spacing: 1.5px;
+      letter-spacing: 0.3px;
       color: #fff;
       text-align: center;
-      background: linear-gradient(transparent, rgba(20,0,40,0.90));
+      background: linear-gradient(transparent, rgba(20,0,40,0.92));
       width: 100%;
-      padding: 18px 6px 7px;
+      padding: clamp(8px, 2vw, 18px) 2px clamp(3px, 0.8vw, 7px);
       text-transform: uppercase;
-      line-height: 1.3;
+      line-height: 1.2;
     }
     .slot .alt-badge {
       position: absolute;
-      top: 6px; right: 6px;
+      top: 3px; right: 3px;
       z-index: 3;
-      font-size: 8px;
+      font-size: clamp(5px, 0.85vw, 8px);
       font-weight: 700;
-      letter-spacing: 1px;
-      background: rgba(180, 100, 255, 0.75);
+      letter-spacing: 0.3px;
+      background: rgba(180, 100, 255, 0.80);
       color: #fff;
-      padding: 2px 5px;
-      border-radius: 4px;
+      padding: 1px 3px;
+      border-radius: 3px;
       text-transform: uppercase;
     }
     .slot.secret { border-color: rgba(249, 226, 175, 0.65); background: rgba(40, 25, 0, 0.65); }
     .slot.secret:hover { border-color: #f9e2af; box-shadow: 0 0 22px #f9e2afbb; }
     .slot.secret .alt-badge { background: rgba(249,180,50,0.85); }
+
+    /* Títulos responsivos */
+    @media (max-width: 600px) {
+      .title-main { font-size: clamp(16px, 5vw, 38px); letter-spacing: 3px; margin-bottom: 12px; }
+      .title { font-size: clamp(8px, 2vw, 13px); letter-spacing: 3px; }
+      .wrapper { padding: 70px 6px 40px; gap: 3px; }
+    }
   </style>
 </head>
 <body>
@@ -124,15 +146,16 @@
       <img src="kofwing_200-9.png" style="width:40px; height:40px; object-fit:contain;">
       <span style="font-family:'Rajdhani',sans-serif; font-size:20px; letter-spacing:3px; color:#fff; font-weight:700;">KOF WING EX</span>
     </a>
-    <ul style="display:flex; gap:8px; list-style:none;">
-      <li><a href="index.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Página principal</a></li>
-      <li><a href="roster.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Roster</a></li>
-      <li><a href="controles.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Controles</a></li>
-      <li><a href="guia.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Guía</a></li>
-      <li><a href="tierlist.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Tier List</a></li>
-      <li><a href="acerca.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Acerca</a></li>
+    <ul style="display:flex; gap:8px; list-style:none; flex-wrap:wrap; justify-content:flex-end;">
+      <li class="nav-hide"><a href="index.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Página principal</a></li>
+      <li class="nav-hide"><a href="roster.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Roster</a></li>
+      <li class="nav-hide"><a href="controles.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Controles</a></li>
+      <li class="nav-hide"><a href="guia.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Guía</a></li>
+      <li class="nav-hide"><a href="tierlist.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Tier List</a></li>
+      <li class="nav-hide"><a href="acerca.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Acerca</a></li>
     </ul>
   </nav>
+  <style>@media(max-width:768px){.nav-hide{display:none!important;}}</style>
 
   <!-- FONDO MP4 -->
   <div class="bg">
@@ -178,7 +201,7 @@
       <a href="Movelist/Shermie.html" class="slot"><img src="personajes/Shermie.png"><div class="name">Shermie</div><span class="alt-badge">ALT</span></a>
     </div>
 
-    <!-- FILA 5 — 7 -->
+    <!-- FILA 5 — 7 (la más ancha, define el tamaño) -->
     <div class="row">
       <a href="Movelist/Rock.html" class="slot"><img src="personajes/Rock.png"><div class="name">Rock</div></a>
       <a href="Movelist/Andy.html" class="slot"><img src="personajes/Andy.png"><div class="name">Andy</div></a>
