@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía de Mecánicas — KOF Wing EX</title>
+<link rel="icon" type="image/png" href="kofwing_200-9.png">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Noto+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0e;
+    --bg2: #111118;
+    --bg3: #16161f;
+    --border: rgba(255,255,255,0.06);
+    --border2: rgba(255,255,255,0.12);
+    --accent: #a855f7;
+    --accent-glow: rgba(168,85,247,0.3);
+    --accent2: #38bdf8;
+    --accent2-glow: rgba(56,189,248,0.25);
+    --accent3: #f472b6;
+    --gold: #fbbf24;
+    --gold-glow: rgba(251,191,36,0.2);
+    --green: #34d399;
+    --red: #f87171;
+    --text: #ece8f5;
+    --muted: #7b77a0;
+    --faint: #2e2c40;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 200;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    background: rgba(10,10,14,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--text);
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .nav-logo img { height: 28px; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--text); }
+  .nav-links a.active { color: var(--accent); }
+
+  /* ===== HERO BANNER ===== */
+  .hero {
+    position: relative;
+    height: 340px;
+    margin-top: 56px;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: 
+      linear-gradient(to bottom, rgba(10,10,14,0.2) 0%, rgba(10,10,14,0.7) 70%, var(--bg) 100%),
+      linear-gradient(135deg, rgba(168,85,247,0.15) 0%, transparent 50%, rgba(56,189,248,0.1) 100%);
+    background-color: #1a0a2e;
+  }
+  /* Decorative grid lines */
+  .hero-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(168,85,247,0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(168,85,247,0.08) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: linear-gradient(to bottom, transparent, rgba(0,0,0,0.5) 30%, rgba(0,0,0,0.5) 70%, transparent);
+  }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding-bottom: 3rem;
+  }
+  .hero-eyebrow {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.2s forwards;
+  }
+  .hero-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(48px, 8vw, 80px);
+    font-weight: 700;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--text);
+    line-height: 1;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.35s forwards;
+  }
+  .hero-title span {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.3);
+  }
+  .hero-sub {
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 0.75rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.5s forwards;
+  }
+  /* Glowing orbs */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    pointer-events: none;
+  }
+  .orb-1 { width: 300px; height: 300px; background: rgba(168,85,247,0.2); top: -80px; left: 15%; }
+  .orb-2 { width: 200px; height: 200px; background: rgba(56,189,248,0.15); top: 20px; right: 20%; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== LAYOUT ===== */
+  .layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    max-width: 1160px;
+    margin: 0 auto;
+    min-height: calc(100vh - 56px - 340px);
+    gap: 0;
+  }
+
+  /* ===== SIDEBAR ===== */
+  aside {
+    border-right: 1px solid var(--border);
+    padding: 1.5rem 0.75rem;
+    position: sticky;
+    top: 56px;
+    height: calc(100vh - 56px);
+    overflow-y: auto;
+  }
+  aside::-webkit-scrollbar { width: 2px; }
+  aside::-webkit-scrollbar-thumb { background: var(--faint); border-radius: 2px; }
+
+  .nav-group-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--faint);
+    padding: 0 0.75rem;
+    margin: 1.5rem 0 0.4rem;
+  }
+  .nav-group-label:first-child { margin-top: 0; }
+
+  .nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    background: none;
+    border: none;
+    border-left: 2px solid transparent;
+    color: var(--muted);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 13px;
+    padding: 8px 0.75rem;
+    border-radius: 0 6px 6px 0;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+  }
+  .nav-btn:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+  .nav-btn.active {
+    color: var(--accent);
+    background: rgba(168,85,247,0.08);
+    border-left-color: var(--accent);
+  }
+  .nav-num {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--faint);
+    min-width: 20px;
+    transition: color 0.15s;
+  }
+  .nav-btn.active .nav-num { color: var(--accent); opacity: 0.7; }
+
+  /* ===== MAIN ===== */
+  main {
+    padding: 2.5rem 2.5rem 5rem;
+    overflow-y: auto;
+    min-height: 100%;
+  }
+  main::-webkit-scrollbar { width: 3px; }
+  main::-webkit-scrollbar-thumb { background: var(--faint); border-radius: 2px; }
+
+  /* ===== SECTION ===== */
+  .section { display: none; animation: sectionIn 0.25s ease; }
+  .section.active { display: block; }
+  @keyframes sectionIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 0.2rem;
+  }
+  .section-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--text);
+  }
+  .section-num {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    color: var(--faint);
+    letter-spacing: 2px;
+  }
+  .section-desc {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ===== CARDS ===== */
+  .grid { display: grid; gap: 12px; margin-bottom: 1.5rem; }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+  .grid-4 { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.2s;
+    border-radius: 10px;
+  }
+  .card:hover { transform: translateY(-2px); }
+  .card:hover::after { opacity: 1; }
+
+  .card.c-purple { border-left: 3px solid var(--accent); }
+  .card.c-purple:hover { box-shadow: 0 0 20px var(--accent-glow); border-color: rgba(168,85,247,0.4); }
+  .card.c-blue   { border-left: 3px solid var(--accent2); }
+  .card.c-blue:hover { box-shadow: 0 0 20px var(--accent2-glow); border-color: rgba(56,189,248,0.3); }
+  .card.c-gold   { border-left: 3px solid var(--gold); }
+  .card.c-gold:hover { box-shadow: 0 0 20px var(--gold-glow); border-color: rgba(251,191,36,0.3); }
+  .card.c-green  { border-left: 3px solid var(--green); }
+  .card.c-green:hover { box-shadow: 0 0 16px rgba(52,211,153,0.2); }
+  .card.c-pink   { border-left: 3px solid var(--accent3); }
+  .card.c-pink:hover { box-shadow: 0 0 16px rgba(244,114,182,0.2); }
+  .card.c-red    { border-left: 3px solid var(--red); }
+  .card.c-red:hover { box-shadow: 0 0 16px rgba(248,113,113,0.2); }
+
+  .card-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-text { font-size: 13px; color: var(--muted); line-height: 1.65; }
+
+  /* ===== TAGS ===== */
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+  .tag-purple { background: rgba(168,85,247,0.12); color: var(--accent); border: 1px solid rgba(168,85,247,0.25); }
+  .tag-blue   { background: rgba(56,189,248,0.1); color: var(--accent2); border: 1px solid rgba(56,189,248,0.25); }
+  .tag-gold   { background: rgba(251,191,36,0.1); color: var(--gold); border: 1px solid rgba(251,191,36,0.25); }
+  .tag-green  { background: rgba(52,211,153,0.1); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+  .tag-pink   { background: rgba(244,114,182,0.1); color: var(--accent3); border: 1px solid rgba(244,114,182,0.25); }
+  .tag-red    { background: rgba(248,113,113,0.1); color: var(--red); border: 1px solid rgba(248,113,113,0.25); }
+
+  /* ===== ENTRY ===== */
+  .entry { margin-bottom: 1.25rem; }
+  .entry-label {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 5px;
+  }
+  .entry-text { font-size: 14px; color: var(--text); line-height: 1.75; }
+  .entry-text strong { color: var(--accent); font-weight: 500; }
+
+  /* ===== TIP / WARN ===== */
+  .tip {
+    background: rgba(168,85,247,0.05);
+    border: 1px solid rgba(168,85,247,0.18);
+    border-radius: 8px;
+    padding: 0.85rem 1.1rem;
+    font-size: 13px;
+    color: #c9bce8;
+    line-height: 1.65;
+    margin: 1rem 0;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .warn {
+    background: rgba(251,191,36,0.05);
+    border: 1px solid rgba(251,191,36,0.18);
+    border-radius: 8px;
+    padding: 0.85rem 1.1rem;
+    font-size: 13px;
+    color: #e8d49a;
+    line-height: 1.65;
+    margin: 1rem 0;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .tip-icon { font-size: 15px; margin-top: 2px; flex-shrink: 0; }
+
+  /* ===== DIVIDER ===== */
+  .divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
+
+  /* ===== BUTTON ROW ===== */
+  .btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .btn-nav {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 9px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid var(--border2);
+    background: var(--bg2);
+    color: var(--muted);
+  }
+  .btn-nav:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+  .btn-nav.primary {
+    background: rgba(168,85,247,0.1);
+    color: var(--accent);
+    border-color: rgba(168,85,247,0.35);
+  }
+  .btn-nav.primary:hover {
+    background: rgba(168,85,247,0.18);
+    box-shadow: 0 0 16px var(--accent-glow);
+  }
+
+  /* ===== KEY BUTTONS ===== */
+  .key {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px; height: 26px;
+    border-radius: 5px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    border: 1px solid;
+  }
+  .key-a { background: rgba(248,113,113,0.12); color: var(--red); border-color: rgba(248,113,113,0.3); }
+  .key-b { background: rgba(56,189,248,0.1); color: var(--accent2); border-color: rgba(56,189,248,0.3); }
+  .key-c { background: rgba(251,191,36,0.1); color: var(--gold); border-color: rgba(251,191,36,0.3); }
+  .key-d { background: rgba(52,211,153,0.1); color: var(--green); border-color: rgba(52,211,153,0.3); }
+
+  /* ===== BURST CARDS ===== */
+  .burst-grid { display: grid; gap: 12px; }
+  .burst-card {
+    background: var(--bg2);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    padding: 1.1rem 1.25rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0 1.1rem;
+    align-items: start;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .burst-badge {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+    margin-top: 3px;
+  }
+  .burst-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .burst-text { font-size: 13px; color: var(--muted); line-height: 1.65; }
+  .burst-text strong { color: var(--text); font-weight: 500; }
+
+  /* ===== PROGRESS BAR (section indicator) ===== */
+  .progress-bar {
+    height: 2px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  /* ===== MOBILE NAV ===== */
+  @media (max-width: 680px) {
+    .layout { grid-template-columns: 1fr; }
+    aside { display: none; }
+    main { padding: 1.5rem 1rem 3rem; }
+    .mobile-nav {
+      display: flex;
+      overflow-x: auto;
+      gap: 6px;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      position: sticky;
+      top: 56px;
+      z-index: 90;
+      scrollbar-width: none;
+    }
+    .mobile-nav::-webkit-scrollbar { display: none; }
+    .mobile-nav button {
+      flex-shrink: 0;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border2);
+      background: var(--bg2);
+      color: var(--muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .mobile-nav button.active {
+      background: rgba(168,85,247,0.12);
+      color: var(--accent);
+      border-color: rgba(168,85,247,0.35);
+    }
+    .nav-links { display: none; }
+    .hero { height: 220px; }
+  }
+  @media (min-width: 681px) { .mobile-nav { display: none; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="kofwing_200-9.png" alt="logo" style="height:28px;">
+    <span>KOF WING EX</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Página principal</a></li>
+    <li><a href="roster.html">Roster</a></li>
+    <li><a href="controles.html">Controles</a></li>
+    <li><a href="guia.html" class="active">Guía</a></li>
+    <li><a href="tierlist.html">Tier List</a></li>
+    <li><a href="acerca.html">Acerca</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">KOF Wing EX · Mecánicas de combate</div>
+    <div class="hero-title">GU<span>ÍA</span></div>
+    <div class="hero-sub">FAQ completo — 12 secciones</div>
+  </div>
+</div>
+
+<!-- Mobile nav -->
+<div class="mobile-nav" id="mobileNav"></div>
+
+<div class="layout">
+  <aside id="sidebar"></aside>
+  <main id="main"></main>
+</div>
+
+<script>
+const sections = [
+  {
+    id: "mov",
+    title: "Movimiento básico",
+    group: "Fundamentos",
+    content: () => `
+      <p class="section-desc">El personaje mira hacia la derecha por defecto. Todas las direcciones se describen desde ese punto de vista.</p>
+      <div class="grid grid-2">
+        <div class="card c-blue">
+          <div class="card-title"><span class="tag tag-blue">Adelante / Atrás</span></div>
+          <div class="card-text">Presiona la dirección correspondiente para caminar. Es la base del posicionamiento.</div>
+        </div>
+        <div class="card c-blue">
+          <div class="card-title"><span class="tag tag-blue">Avance rápido</span></div>
+          <div class="card-text">Doble toque hacia adelante. Cubre distancia velozmente para presionar al rival.</div>
+        </div>
+        <div class="card c-blue">
+          <div class="card-title"><span class="tag tag-blue">Retroceso rápido</span></div>
+          <div class="card-text">Doble toque hacia atrás. Útil para escapar de la presión o crear distancia.</div>
+        </div>
+        <div class="card c-blue">
+          <div class="card-title"><span class="tag tag-blue">Agacharse</span></div>
+          <div class="card-text">Mantén abajo. Reduce tu perfil y activa ataques y defensas agachadas.</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="entry">
+        <div class="entry-label">Tipos de salto</div>
+        <div class="entry-text">La <strong>altura</strong> del salto depende del tiempo que mantengas presionado el botón de salto: salto pequeño, salto medio o salto grande. La <strong>dirección</strong> se determina con el botón de salto que uses: salto atrás, salto vertical o salto adelante.</div>
+      </div>
+      <div class="entry">
+        <div class="entry-label">Salto sombra</div>
+        <div class="entry-text">Durante el avance rápido, ciertos botones activan un salto con alta velocidad horizontal. Útil para cruzar al rival o esquivar proyectiles.</div>
+      </div>
+      <div class="tip"><div class="tip-icon">💡</div><div>Controlar tu posición con flexibilidad es clave para sacar ventaja tanto en combate cuerpo a cuerpo como en combos. El movimiento es la base de todo lo demás.</div></div>
+    `
+  },
+  {
+    id: "ataques",
+    title: "Ataques y defensa",
+    group: "Fundamentos",
+    content: () => `
+      <p class="section-desc">Cuatro botones de ataque que se combinan con tu posición para generar ataques de pie, agachado y aéreos.</p>
+      <div class="grid grid-4">
+        <div class="card">
+          <div class="card-title"><span class="key key-a">A</span></div>
+          <div class="card-text"><strong style="color:var(--text)">Puñetazo ligero</strong><br>Rápido, poco daño. Base de muchos combos.</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="key key-b">B</span></div>
+          <div class="card-text"><strong style="color:var(--text)">Patada ligera</strong><br>Rápida, útil para confirmar ataques bajos.</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="key key-c">C</span></div>
+          <div class="card-text"><strong style="color:var(--text)">Puñetazo fuerte</strong><br>Más lento, mayor daño. Buena base de combos.</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="key key-d">D</span></div>
+          <div class="card-text"><strong style="color:var(--text)">Patada fuerte</strong><br>La más potente entre los normales.</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="entry">
+        <div class="entry-label">Ataques según posición</div>
+        <div class="entry-text">De pie → ataques de pie · Agachado → ataques agachados · En el aire → ataques aéreos. Cada posición activa un conjunto diferente de golpes.</div>
+      </div>
+      <div class="divider"></div>
+      <div class="entry">
+        <div class="entry-label">Cómo defenderse</div>
+        <div class="entry-text">Mantén la dirección hacia atrás mientras el rival ataca para bloquear. De pie activas la <strong>defensa media</strong>; agachado activas la <strong>defensa baja</strong>. Al defender bien reduces la mayoría del daño, pero entras en un breve estado de <strong>rigidez de defensa</strong>.</div>
+      </div>
+      <div class="warn"><div class="tip-icon">⚠️</div><div>Durante la rigidez de defensa eres vulnerable a ciertos contraataques. Úsala con cuidado y conoce cuándo arriesgar.</div></div>
+    `
+  },
+  {
+    id: "segmentos",
+    title: "Alto, medio y bajo",
+    group: "Fundamentos",
+    content: () => `
+      <p class="section-desc">Los ataques se dividen en tres segmentos. Saber leerlos y defenderte del segmento correcto es fundamental para sobrevivir.</p>
+      <div class="grid grid-3">
+        <div class="card c-blue">
+          <div class="card-title"><span class="tag tag-blue">Alto</span></div>
+          <div class="card-text">La mayoría de ataques normales. Bloqueables tanto de pie como agachado. El más común.</div>
+        </div>
+        <div class="card c-gold">
+          <div class="card-title"><span class="tag tag-gold">Medio</span></div>
+          <div class="card-text">Los ataques aéreos son medios. Solo se bloquea de pie. <strong style="color:var(--gold)">No se puede bloquear agachado.</strong></div>
+        </div>
+        <div class="card c-green">
+          <div class="card-title"><span class="tag tag-green">Bajo</span></div>
+          <div class="card-text">Las patadas agachadas ligeras y fuertes suelen ser bajas. Solo se bloquea agachado. <strong style="color:var(--green)">No se puede bloquear de pie.</strong></div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="entry">
+        <div class="entry-label">Regla práctica</div>
+        <div class="entry-text">La mayoría de patadas agachadas ligeras/fuertes son <strong>bajas</strong>. Los ataques aéreos son <strong>medios</strong>. Para el resto, consulta la tabla de movimientos del personaje.</div>
+      </div>
+      <div class="tip"><div class="tip-icon">💡</div><div>Debes cambiar constantemente entre defensa de pie y agachada. Mezclar ataques medios y bajos es una de las principales formas de abrir la guardia del rival.</div></div>
+    `
+  },
+  {
+    id: "esquiva",
+    title: "Esquiva, súper golpe y recepción",
+    group: "Fundamentos",
+    content: () => `
+      <p class="section-desc">Herramientas defensivas y ofensivas de alto impacto que consumen energía de forma estratégica.</p>
+      <div class="grid grid-2">
+        <div class="card c-purple">
+          <div class="card-title"><span class="tag tag-purple">Esquiva</span> <span style="font-size:12px;color:var(--muted)">A+B o L</span></div>
+          <div class="card-text">Breve estado de invencibilidad. Permite reposicionarse, escapar o cruzar al rival.</div>
+        </div>
+        <div class="card c-gold">
+          <div class="card-title"><span class="tag tag-gold">Súper golpe</span> <span style="font-size:12px;color:var(--muted)">C+D o E</span></div>
+          <div class="card-text">Ataque potente de corto alcance. Útil como reversal o para romper la presión del rival.</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="entry">
+        <div class="entry-label">Acciones de emergencia</div>
+        <div class="entry-text">Durante la <strong>rigidez de defensa</strong>, puedes gastar 1 unidad de energía para ejecutar una <strong>Esquiva de Emergencia</strong> o un <strong>Súper Golpe de Emergencia</strong>. Esto te permite escapar o contraatacar incluso en las situaciones más comprometidas.</div>
+      </div>
+      <div class="divider"></div>
+      <div class="entry">
+        <div class="entry-label">Recepción de caída</div>
+        <div class="entry-text">Cuando estás a punto de tocar el suelo tras ser lanzado, activa la esquiva para realizar una recepción. Te levantas de pie y puedes actuar de inmediato. <strong>Algunos ataques impiden temporalmente esta acción.</strong></div>
+      </div>
+    `
+  },
+  {
+    id: "burst",
+    title: "Explosión de energía",
+    group: "Sistema de energía",
+    content: () => `
+      <p class="section-desc">El sistema de burst es uno de los más complejos del juego. Existen tres tipos con efectos muy distintos.</p>
+      <div class="entry">
+        <div class="entry-label">Condición de activación</div>
+        <div class="entry-text">Necesitas <strong>3 unidades de energía</strong>, o estar con <strong>poca vida y tener al menos 1</strong>. La duración del burst depende de cuánta energía se consuma. Durante el burst, la acumulación normal de energía se reduce considerablemente.</div>
+      </div>
+      <div class="divider"></div>
+      <div class="burst-grid">
+        <div class="burst-card" style="border-left:3px solid var(--red);">
+          <div><div class="burst-badge" style="background:rgba(248,113,113,0.1);color:var(--red);border:1px solid rgba(248,113,113,0.25);">Fuerza</div></div>
+          <div>
+            <div class="burst-title" style="color:var(--red);">Burst ofensivo</div>
+            <div class="burst-text"><strong>Activación:</strong> Presiona C · <strong>Efecto:</strong> Todo el daño aumenta un 15%. Los súper kills evolucionan a versiones MAX con propiedades especiales. Ideal para rematar o maximizar combos.</div>
+          </div>
+        </div>
+        <div class="burst-card" style="border-left:3px solid var(--accent);">
+          <div><div class="burst-badge" style="background:rgba(168,85,247,0.1);color:var(--accent);border:1px solid rgba(168,85,247,0.25);">Técnica</div></div>
+          <div>
+            <div class="burst-title" style="color:var(--accent);">Burst técnico</div>
+            <div class="burst-text"><strong>Activación:</strong> Mantén dirección + C · <strong>Efecto:</strong> Habilita el <strong>Drive Cancel</strong>: durante la ventana de cancelación de una habilidad, gasta barra de burst para cancelar y encadenar otra habilidad directamente. Similar al BC clásico.</div>
+          </div>
+        </div>
+        <div class="burst-card" style="border-left:3px solid var(--accent2);">
+          <div><div class="burst-badge" style="background:rgba(56,189,248,0.1);color:var(--accent2);border:1px solid rgba(56,189,248,0.25);">Defensa</div></div>
+          <div>
+            <div class="burst-title" style="color:var(--accent2);">Burst defensivo</div>
+            <div class="burst-text"><strong>Activación:</strong> Mantén + C · <strong>Efectos:</strong> Empuja enemigos cercanos · Daño recibido reducido al 80% · Defensa no consume vida · Kill y súper kill tienen armadura integrada · Costo de acciones de emergencia reducido.</div>
+          </div>
+        </div>
+      </div>
+    `
+  },
+  {
+    id: "habilidades",
+    title: "Tipos de habilidades",
+    group: "Sistema de energía",
+    content: () => `
+      <p class="section-desc">Existen cinco categorías principales de habilidades especiales, desde las más básicas hasta las más poderosas.</p>
+      <div class="grid grid-2">
+        <div class="card c-blue">
+          <div class="card-title"><span class="tag tag-blue">Habilidad especial</span></div>
+          <div class="card-text">Dirección + botón de puño o patada. El más básico de los ataques especiales. Punto de partida de muchos combos.</div>
+        </div>
+        <div class="card c-green">
+          <div class="card-title"><span class="tag tag-green">Kill (必杀技)</span></div>
+          <div class="card-text">Secuencia de comandos específica. Requiere cumplir condiciones para ejecutarse. Mayor potencial que las habilidades especiales.</div>
+        </div>
+        <div class="card c-gold">
+          <div class="card-title"><span class="tag tag-gold">Súper kill (超必杀技)</span></div>
+          <div class="card-text">Requiere 1 unidad de energía. Mayor daño, mejores propiedades. La herramienta más versátil del sistema de energía.</div>
+        </div>
+        <div class="card c-purple">
+          <div class="card-title"><span class="tag tag-purple">Súper kill latente</span></div>
+          <div class="card-text">Solo disponible durante el Burst. El más poderoso. Sus propiedades únicas lo hacen impredecible para el rival.</div>
+        </div>
+        <div class="card c-pink">
+          <div class="card-title"><span class="tag tag-pink">Técnica derivada</span></div>
+          <div class="card-text">Durante la ventana de cancelación de la habilidad A, puedes usar directamente la habilidad B. Esa B es la "derivada" de A. Clave para combos avanzados.</div>
+        </div>
+      </div>
+      <div class="tip"><div class="tip-icon">💡</div><div>Consulta la tabla de movimientos (出招表) de tu personaje para conocer exactamente qué habilidades tiene y cómo se activan.</div></div>
+    `
+  },
+  {
+    id: "combos",
+    title: "Combos y modificador",
+    group: "Mecánicas avanzadas",
+    content: () => `
+      <p class="section-desc">El sistema de combos incluye mecánicas de penalización y escape que afectan directamente al daño final.</p>
+      <div class="entry">
+        <div class="entry-label">¿Qué es un combo?</div>
+        <div class="entry-text">Tras golpear al rival, encadenas ataques mediante cancelaciones o transiciones que lo mantienen en rigidez o en el aire, impidiéndole recuperarse. El combo termina cuando el <strong>contador de hits se interrumpe</strong>.</div>
+      </div>
+      <div class="divider"></div>
+      <div class="entry">
+        <div class="entry-label">Modificador de combo</div>
+        <div class="entry-text">Cada vez que repites un movimiento dentro del mismo combo, su daño se <strong>divide por el número de veces que lo has usado</strong>. El mínimo es 1% de daño por hit. Esto penaliza los combos repetitivos y premia la variedad de movimientos.</div>
+      </div>
+      <div class="tip"><div class="tip-icon">💡</div><div>El <strong>Drive Cancel</strong> reduce el modificador acumulado, restando 1 a todos los contadores de uso de habilidades activos. Úsalo para extender combos sin penalización excesiva.</div></div>
+      <div class="divider"></div>
+      <div class="entry">
+        <div class="entry-label">Escape de modificador</div>
+        <div class="entry-text">Cuando el modificador de una habilidad llega a <strong>10 usos</strong>, cada hit de esa habilidad pone al rival en estado de <strong>recepción aérea</strong>: el rival no puede ser perseguido y actúa al tocar el suelo. En modo práctica el límite es 20.</div>
+      </div>
+      <div class="warn"><div class="tip-icon">⚠️</div><div>Varía tus habilidades en cada combo para evitar alcanzar el límite de modificador prematuramente.</div></div>
+    `
+  },
+  {
+    id: "proyectiles",
+    title: "Proyectiles",
+    group: "Mecánicas avanzadas",
+    content: () => `
+      <p class="section-desc">Los proyectiles tienen un sistema de niveles que determina cómo interactúan entre sí.</p>
+      <div class="entry">
+        <div class="entry-label">¿Qué es un proyectil?</div>
+        <div class="entry-text">Ataque con hitbox que se separa del cuerpo del personaje y viaja de forma independiente. Común en juegos de lucha para controlar el espacio.</div>
+      </div>
+      <div class="divider"></div>
+      <div class="grid grid-2">
+        <div class="card c-blue">
+          <div class="card-title"><span class="tag tag-blue">Neutralización</span></div>
+          <div class="card-text">Dos proyectiles que colisionan: el de menor nivel desaparece. Si tienen el mismo nivel, ambos se cancelan. Los proyectiles <strong>inneutralizables</strong> ignoran estas reglas completamente.</div>
+        </div>
+        <div class="card c-green">
+          <div class="card-title"><span class="tag tag-green">Rebote</span></div>
+          <div class="card-text">Si un proyectil choca con una habilidad de desvío de nivel igual o superior, es devuelto hacia el rival que lo lanzó.</div>
+        </div>
+        <div class="card c-gold">
+          <div class="card-title"><span class="tag tag-gold">Contraataque</span></div>
+          <div class="card-text">Ciertas habilidades neutralizan el proyectil al contacto y contraatacan automáticamente. También sujeto a los niveles de neutralización.</div>
+        </div>
+      </div>
+    `
+  },
+  {
+    id: "lanzamientos",
+    title: "Lanzamientos",
+    group: "Mecánicas avanzadas",
+    content: () => `
+      <p class="section-desc">Existen tres tipos de lanzamientos con condiciones y propiedades distintas.</p>
+      <div class="entry">
+        <div class="entry-label">Lanzamiento normal</div>
+        <div class="entry-text">Dirección + botón fuerte. Requiere estar cerca del rival cuando está en <strong>estado de acción activa</strong> (moviéndose, atacando, esquivando). No funciona contra rivales en rigidez de golpe/defensa, caída, recepción ni estados de invencibilidad. No activa la defensa.</div>
+      </div>
+      <div class="tip"><div class="tip-icon">💡</div><div>Para romper un lanzamiento, pulsa un botón fuerte en los primeros <strong>5 frames</strong> tras recibir el agarre.</div></div>
+      <div class="divider"></div>
+      <div class="grid grid-2">
+        <div class="card c-purple">
+          <div class="card-title"><span class="tag tag-purple">Lanzamiento por comando</span></div>
+          <div class="card-text">Tipo de kill. A diferencia del normal, <strong>sí puede golpear a rivales en rigidez de golpe</strong>. No activa la defensa. Puede conectar contra enemigos esquivando.</div>
+        </div>
+        <div class="card c-pink">
+          <div class="card-title"><span class="tag tag-pink">Lanzamiento de golpe</span></div>
+          <div class="card-text">Kill que requiere comando. Conecta en estado activo terrestre o en rigidez de golpe. Tiene sus propias condiciones específicas por personaje.</div>
+        </div>
+      </div>
+    `
+  },
+  {
+    id: "bloqueo",
+    title: "Bloqueo, parry y parry-lanzamiento",
+    group: "Mecánicas avanzadas",
+    content: () => `
+      <p class="section-desc">Algunos movimientos tienen frames de bloqueo integrados que funcionan de forma independiente a la defensa normal.</p>
+      <div class="grid grid-3">
+        <div class="card c-blue">
+          <div class="card-title"><span class="tag tag-blue">Bloqueo</span></div>
+          <div class="card-text">Bloquea cualquier ataque físico durante esos frames específicos del movimiento.</div>
+        </div>
+        <div class="card c-gold">
+          <div class="card-title"><span class="tag tag-gold">Bloqueo medio</span></div>
+          <div class="card-text">Solo bloquea ataques medios. <strong style="color:var(--gold)">No bloquea bajos.</strong></div>
+        </div>
+        <div class="card c-green">
+          <div class="card-title"><span class="tag tag-green">Bloqueo bajo</span></div>
+          <div class="card-text">Solo bloquea ataques bajos. <strong style="color:var(--green)">No bloquea medios.</strong></div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="entry">
+        <div class="entry-label">Parry</div>
+        <div class="entry-text">Al recibir un hitbox durante los frames activos, lo bloquea y <strong>contraataca automáticamente</strong>. No puede bloquear lanzamientos normales ni por comando, habilidades que fijan la posición del objetivo, ni proyectiles.</div>
+      </div>
+      <div class="entry">
+        <div class="entry-label">Parry-lanzamiento</div>
+        <div class="entry-text">Igual que el Parry, pero al bloquear con éxito <strong>fija la posición del rival</strong> y ejecuta un contraataque tipo lanzamiento. Más daño y más castigo que el Parry normal.</div>
+      </div>
+    `
+  },
+  {
+    id: "counter",
+    title: "Counter hit y wire attack",
+    group: "Mecánicas avanzadas",
+    content: () => `
+      <p class="section-desc">Mecánicas que recompensan interrumpir al rival durante la ejecución de sus ataques.</p>
+      <div class="grid grid-3">
+        <div class="card c-red">
+          <div class="card-title"><span class="tag tag-red">Counter hit</span></div>
+          <div class="card-text">Interrumpes al rival durante el inicio de su ataque. Aparece COUNTER y el daño se incrementa un <strong style="color:var(--red)">20%</strong>.</div>
+        </div>
+        <div class="card c-gold">
+          <div class="card-title"><span class="tag tag-gold">Wire attack</span></div>
+          <div class="card-text">Algunos movimientos lanzan al rival contra la pared, creando una ventana para ataques adicionales de seguimiento.</div>
+        </div>
+        <div class="card c-purple">
+          <div class="card-title"><span class="tag tag-purple">Counter wire</span></div>
+          <div class="card-text">Ciertos movimientos solo activan el efecto de pared si conectan como counter hit.</div>
+        </div>
+      </div>
+      <div class="tip"><div class="tip-icon">💡</div><div>Busca situaciones donde puedas anticiparte al ataque del rival para convertir un golpe normal en un counter que te dé ventaja de combo.</div></div>
+    `
+  },
+  {
+    id: "especiales",
+    title: "Propiedades especiales",
+    group: "Referencia",
+    content: () => `
+      <p class="section-desc">Propiedades que algunos ataques tienen y que rompen las reglas habituales de defensa y seguimiento.</p>
+      <div class="grid grid-2">
+        <div class="card c-red">
+          <div class="card-title"><span class="tag tag-red">Imparable</span></div>
+          <div class="card-text">Rompe simultáneamente la defensa media y baja. <strong style="color:var(--red)">No puede bloquearse de ninguna forma.</strong> Requiere esquivar o usar una acción de emergencia.</div>
+        </div>
+        <div class="card c-gold">
+          <div class="card-title"><span class="tag tag-gold">Rompe-defensa</span></div>
+          <div class="card-text">Al golpear a un rival en guardia, genera un estado de golpe especial en lugar del rebote normal de defensa.</div>
+        </div>
+        <div class="card c-green">
+          <div class="card-title"><span class="tag tag-green">Persecución en caída</span></div>
+          <div class="card-text">Permite golpear al rival mientras está tirado en el suelo para añadir daño extra al combo.</div>
+        </div>
+        <div class="card c-purple">
+          <div class="card-title"><span class="tag tag-purple">Persecución universal</span></div>
+          <div class="card-text">Puede golpear incluso en estados normalmente imperseguibles, como la recepción aérea. Muy valiosa en combos avanzados.</div>
+        </div>
+      </div>
+    `
+  }
+];
+
+let current = 0;
+
+function groupBy(arr, key) {
+  return arr.reduce((g, item, i) => {
+    const k = item[key];
+    if (!g[k]) g[k] = [];
+    g[k].push({ ...item, idx: i });
+    return g;
+  }, {});
+}
+
+function renderNav() {
+  const sidebar = document.getElementById('sidebar');
+  const mobileNav = document.getElementById('mobileNav');
+  const groups = groupBy(sections, 'group');
+
+  let sideHTML = '';
+  for (const [group, items] of Object.entries(groups)) {
+    sideHTML += `<div class="nav-group-label">${group}</div>`;
+    items.forEach(({ title, idx }) => {
+      sideHTML += `<button class="nav-btn${idx === current ? ' active' : ''}" onclick="show(${idx})">
+        <span class="nav-num">${String(idx+1).padStart(2,'0')}</span>${title}
+      </button>`;
+    });
+  }
+  sidebar.innerHTML = sideHTML;
+
+  let mobileHTML = '';
+  sections.forEach(({ title }, i) => {
+    mobileHTML += `<button class="${i === current ? 'active' : ''}" onclick="show(${i})">${title}</button>`;
+  });
+  mobileNav.innerHTML = mobileHTML;
+}
+
+function renderMain() {
+  const sec = sections[current];
+  const prev = current > 0 ? sections[current - 1] : null;
+  const next = current < sections.length - 1 ? sections[current + 1] : null;
+  const pct = Math.round(((current + 1) / sections.length) * 100);
+
+  const btnRow = `
+    <div class="btn-row">
+      ${prev ? `<button class="btn-nav" onclick="show(${current-1})">← ${prev.title}</button>` : ''}
+      ${next ? `<button class="btn-nav primary" onclick="show(${current+1})">${next.title} →</button>` : ''}
+    </div>`;
+
+  document.getElementById('main').innerHTML = `
+    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="section active">
+      <div class="section-header">
+        <div class="section-title">${sec.title}</div>
+        <span class="section-num">${String(current+1).padStart(2,'0')} / ${sections.length}</span>
+      </div>
+      ${sec.content()}
+      ${btnRow}
+    </div>`;
+}
+
+function show(idx) {
+  current = idx;
+  renderNav();
+  renderMain();
+  document.getElementById('main').scrollTop = 0;
+  const mobileNav = document.getElementById('mobileNav');
+  const activeBtn = mobileNav.children[idx];
+  if (activeBtn) activeBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+}
+
+renderNav();
+renderMain();
+</script>
+</body>
+</html>

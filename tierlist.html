@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tier List - KOF Wing EX</title>
+  <link rel="icon" type="image/png" href="kofwing_200-9.png">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Rajdhani', sans-serif; background: #0a0010; color: #fff; min-height: 100vh; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 16px 40px; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); }
+    nav a.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    nav a.brand img { width: 40px; height: 40px; object-fit: contain; }
+    nav a.brand span { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 3px; color: #fff; }
+    nav ul { display: flex; gap: 8px; list-style: none; }
+    nav ul a { color: rgba(255,255,255,0.8); text-decoration: none; font-size: 13px; letter-spacing: 2px; font-weight: 600; text-transform: uppercase; padding: 8px 16px; border-radius: 4px; transition: all 0.3s; }
+    nav ul a:hover { color: #fff; background: rgba(123,47,247,0.3); }
+
+    .header { text-align: center; padding: 120px 24px 40px; }
+    .header h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(48px, 8vw, 80px); letter-spacing: 6px; color: #a855f7; text-shadow: 0 0 40px rgba(168,85,247,0.5); }
+    .header p { color: rgba(255,255,255,0.5); font-size: 14px; letter-spacing: 2px; margin-top: 8px; }
+
+    /* ZONA CAPTURABLE */
+    #capture-zone { background: #0a0010; padding: 20px; }
+
+    .tierlist-wrap { max-width: 1400px; margin: 0 auto; padding: 0 20px 20px; }
+
+    /* FILAS MÁS ALTAS */
+    .tier-row { display: flex; align-items: stretch; margin-bottom: 8px; border-radius: 8px; overflow: hidden; min-height: 120px; }
+    .tier-label { width: 90px; min-width: 90px; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 44px; letter-spacing: 2px; font-weight: 700; }
+    .tier-S .tier-label { background: #ff4444; }
+    .tier-A .tier-label { background: #ff8800; }
+    .tier-B .tier-label { background: #ddcc00; color: #000; }
+    .tier-C .tier-label { background: #44bb44; }
+    .tier-D .tier-label { background: #4488ff; }
+    .tier-F .tier-label { background: #884488; }
+    .tier-slots { flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-left: none; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px; min-height: 120px; transition: background 0.2s; }
+    .tier-slots.drag-over { background: rgba(168,85,247,0.15); border-color: #a855f7; }
+
+    /* watermark */
+    .wm { text-align: center; padding: 10px 0 4px; font-family: 'Bebas Neue', sans-serif; font-size: 14px; letter-spacing: 4px; color: rgba(168,85,247,0.5); }
+
+    .pool-section { max-width: 1400px; margin: 24px auto 0; padding: 0 20px 60px; }
+    .pool-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 4px; color: rgba(255,255,255,0.4); margin-bottom: 12px; }
+    .pool { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; min-height: 130px; transition: background 0.2s; }
+    .pool.drag-over { background: rgba(168,85,247,0.1); border-color: #a855f7; }
+
+    /* CARDS MÁS GRANDES */
+    .char-card { width: 100px; cursor: grab; border-radius: 8px; overflow: hidden; position: relative; transition: transform 0.15s, box-shadow 0.15s; user-select: none; flex-shrink: 0; }
+    .char-card:active { cursor: grabbing; transform: scale(1.1); box-shadow: 0 8px 24px rgba(168,85,247,0.5); }
+    .char-card img { width: 100%; height: 110px; object-fit: cover; object-position: top; display: block; }
+    .char-card .char-name { background: rgba(0,0,0,0.85); font-size: 11px; letter-spacing: 1px; text-align: center; padding: 4px 4px; color: #fff; text-transform: uppercase; font-weight: 700; line-height: 1.2; }
+    .char-card.dragging { opacity: 0.4; }
+
+    /* BOTÓN GUARDAR */
+    .actions { display: flex; justify-content: center; gap: 12px; margin: 20px auto; max-width: 1400px; padding: 0 20px; }
+    .btn-img {
+      font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700;
+      letter-spacing: 2px; padding: 12px 32px; border-radius: 8px; border: none;
+      cursor: pointer; text-transform: uppercase; transition: all 0.2s;
+      background: linear-gradient(135deg, #a855f7, #7c3aed);
+      color: #fff; box-shadow: 0 4px 20px rgba(168,85,247,0.4);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .btn-img:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(168,85,247,0.6); }
+    .btn-img:active { transform: translateY(0); }
+    .btn-img svg { width: 18px; height: 18px; }
+
+    .status { text-align: center; font-size: 12px; color: #a855f7; letter-spacing: 2px; margin-top: 8px; height: 20px; }
+
+    @media (max-width: 768px) {
+      nav ul { display: none; }
+      nav { padding: 16px 20px; }
+      .tier-label { width: 55px; min-width: 55px; font-size: 30px; }
+      .char-card { width: 72px; }
+      .char-card img { height: 80px; }
+      .char-card .char-name { font-size: 9px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="brand">
+    <img src="kofwing_200-9.png" alt="logo">
+    <span>KOF WING EX</span>
+  </a>
+  <ul>
+    <li><a href="index.html">Página principal</a></li>
+    <li><a href="roster.html">Roster</a></li>
+    <li><a href="controles.html">Controles</a></li>
+    <li><a href="guia.html">Guía</a></li>
+    <li><a href="tierlist.html">Tier List</a></li>
+    <li><a href="acerca.html">Acerca</a></li>
+  </ul>
+</nav>
+
+<div class="header">
+  <h1>TIER LIST</h1>
+  <p>Arrastra los personajes a cada tier · Luego guarda como imagen · Compártelo en Discord</p>
+</div>
+
+<div id="capture-zone">
+  <div class="tierlist-wrap">
+    <div class="tier-row tier-S"><div class="tier-label">S</div><div class="tier-slots" data-tier="S" id="tier-S"></div></div>
+    <div class="tier-row tier-A"><div class="tier-label">A</div><div class="tier-slots" data-tier="A" id="tier-A"></div></div>
+    <div class="tier-row tier-B"><div class="tier-label">B</div><div class="tier-slots" data-tier="B" id="tier-B"></div></div>
+    <div class="tier-row tier-C"><div class="tier-label">C</div><div class="tier-slots" data-tier="C" id="tier-C"></div></div>
+    <div class="tier-row tier-D"><div class="tier-label">D</div><div class="tier-slots" data-tier="D" id="tier-D"></div></div>
+    <div class="tier-row tier-F"><div class="tier-label">F</div><div class="tier-slots" data-tier="F" id="tier-F"></div></div>
+  </div>
+  <div class="wm">KOF WING EX · TIER LIST</div>
+</div>
+
+<div class="actions">
+  <button class="btn-img" onclick="saveAsImage()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+      <polyline points="21 15 16 10 5 21"/>
+    </svg>
+    Guardar como imagen
+  </button>
+</div>
+<div class="status" id="status"></div>
+
+<div class="pool-section">
+  <div class="pool-title">PERSONAJES DISPONIBLES</div>
+  <div class="pool" id="pool" data-tier="pool"></div>
+</div>
+
+<script>
+const CHARACTERS = [
+  { id: 'akuma',     name: 'Akuma',      img: 'https://i.pinimg.com/474x/68/9e/ab/689eab4597f368a5ce3ff530e26d0335.jpg' },
+  { id: 'akuma2',    name: 'Akuma 2',    img: 'https://i.ytimg.com/vi/-NDelUJcA50/sddefault.jpg' },
+  { id: 'andy',      name: 'Andy',       img: 'https://static.wikia.nocookie.net/edafd589-0073-4217-b390-1fe647800f19/scale-to-width/755' },
+  { id: 'angel',     name: 'Angel',      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjaCVaIfG78r9H3Mzqt-wa9OPZDeJU4WtUhs-GnYu4VUFlBXRg' },
+  { id: 'ash',       name: 'Ash',        img: 'https://static.wikia.nocookie.net/heirtothethrone/images/4/46/Ashcrimson.png/revision/latest/scale-to-width-down/400?cb=20120827160132' },
+  { id: 'ash2',      name: 'Ash 2',      img: 'https://static.wikia.nocookie.net/kof/images/2/26/1815678-select_c_1a.png/revision/latest?cb=20120523223610&path-prefix=es' },
+  { id: 'athena',    name: 'Athena',     img: 'https://a.storyblok.com/f/178900/200x199/205d3bb687/c004435e30f1ef8f057457e089e317791322368966_large.jpg/m/filters:quality(95)format(webp)' },
+  { id: 'athena2',   name: 'Athena 2',   img: 'https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSLB0BiBmI98g6i9EfpefjKKzk1-TYsew_ucKwoRAw_rpmaKmla' },
+  { id: 'benimaru',  name: 'Benimaru',   img: 'https://static.wikia.nocookie.net/snk-fanon/images/f/f0/BeniXII.png/revision/latest/scale-to-width-down/250?cb=20250517012442' },
+  { id: 'chang',     name: 'Chang',      img: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQgXmshJVm1K5Jif3YNvJNQ0CFrXmbM2JYZ6Lu-96yah78pIBbr' },
+  { id: 'chris',     name: 'Chris',      img: 'https://gbaike-image.cdn.bcebos.com/3b292df5e0fe9925bc31c7e5d1f949df8db1cb13db7e/3b292df5e0fe9925bc31c7e5d1f949df8db1cb13db7e_url?x-bce-process=image/format,f_auto/resize,m_lfit,w_400,limit_1' },
+  { id: 'chris2',    name: 'Chris 2',    img: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/c70a4369-e116-4e81-9116-6c38e3740826/dm5jheu-1f46d962-851a-4a05-a232-ca2a551e515d.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9jNzBhNDM2OS1lMTE2LTRlODEtOTExNi02YzM4ZTM3NDA4MjYvZG01amhldS0xZjQ2ZDk2Mi04NTFhLTRhMDUtYTIzMi1jYTJhNTUxZTUxNWQuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.oMPTf4De1Q3BuOZ74KiRuFMxHAaBUKq9DAcC8vpW8Xw' },
+  { id: 'chunli',    name: 'Chun-Li',    img: 'https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ8xNc3LRUAgRznF41jYbbIRsphaIIGnoF-DLj3eq5-q9oBFjMn' },
+  { id: 'chunli2',   name: 'Chun-Li 2',  img: 'https://res.cloudinary.com/jerrick/image/upload/d_642250b563292b35f27461a7.png,f_jpg,fl_progressive,q_auto,w_1024/ednjxm6rzfxq2htddupu.jpg' },
+  { id: 'daimon',    name: 'Daimon',     img: 'https://i.ebayimg.com/images/g/DbEAAOSwmrxms6dl/s-l300.jpg' },
+  { id: 'gato',      name: 'Gato',       img: 'https://pbs.twimg.com/media/FMnowhcXEAQ1whQ.jpg' },
+  { id: 'geese',     name: 'Geese',      img: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTI5PWtd9RH_CcsMoCLVjLhcALijci70fneLG2rytO4lbt2V2Mc' },
+  { id: 'geese2',    name: 'Geese 2',    img: 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSzy1syeHM0aHc7PUGvmDdCG1LceI0SAw0Erj0Iy_XsWI-GDOG-' },
+  { id: 'goenitz',   name: 'Goenitz',    img: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/0bf2227e-acd6-4cc3-8e96-e3b13294cd32/d9q8m63-b0df9f5f-bb09-478b-bb6b-b888944efdf9.png/v1/fill/w_587,h_350/goenitz_kof_2002um_by_topdog4815_d9q8m63-350t.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NjczIiwicGF0aCI6Ii9mLzBiZjIyMjdlLWFjZDYtNGNjMy04ZTk2LWUzYjEzMjk0Y2QzMi9kOXE4bTYzLWIwZGY5ZjVmLWJiMDktNDc4Yi1iYjZiLWI4ODg5NDRlZmRmOS5wbmciLCJ3aWR0aCI6Ijw9MTEyOCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.nDG8qGY-gQ4WZbimYKdAtPREsSoXc_KtRAkt9ikQ6wQ' },
+  { id: 'haohmaru',  name: 'Haohmaru',   img: 'https://i.pinimg.com/736x/48/df/e9/48dfe9328876f1e6fd76209cb0bd265f.jpg' },
+  { id: 'haohmaru2', name: 'Haohmaru 2', img: 'https://static.wikia.nocookie.net/snk-fanon/images/e/e3/Haohmaru.png/revision/latest/scale-to-width-down/250?cb=20220629212844' },
+  { id: 'igniz',     name: 'Igniz',      img: 'https://www.dreamcancel.com/w/images/thumb/e/ed/02UM_Igniz_Profile.png/437px-02UM_Igniz_Profile.png' },
+  { id: 'igniz2',    name: 'Igniz 2',    img: 'https://i1.sndcdn.com/artworks-000311312706-i3qzns-t500x500.jpg' },
+  { id: 'iori',      name: 'Iori',       img: 'https://i.pinimg.com/236x/dc/78/58/dc7858a5d930f23a3b1d2d2cbbc4f871.jpg' },
+  { id: 'iori2',     name: 'Iori 2',     img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMbxOQ_DKErPFmaFlI4GfRnXLYEEADLTbN9isS20ZAcL_IheTJ' },
+  { id: 'iori3',     name: 'Iori 3',     img: 'https://i.pinimg.com/originals/54/cc/67/54cc67e53ce4575719390d4aba4cbff8.png' },
+  { id: 'jenet',     name: 'Jenet',      img: 'https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQR-Wzia-_OIg5VBdYTYzHX6klfZPJZumt8TbDrVwJ4tK3kl6ln' },
+  { id: 'k',         name: "K'",         img: 'https://pbs.twimg.com/media/EAG7NONWsAAprh9.png' },
+  { id: 'k2',        name: "K' 2",       img: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/72fad4f3-cf8d-4836-b274-1bf16017ea12/d6sofmh-431413e1-8712-42c3-bd3c-5941eb11c02f.png/v1/crop/w_125,h_125,x_0,y_0,scl_0.26041666666667,q_70,strp/k__dash__kof_card_by_heidernn_d6sofmh-125s.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NDgwIiwicGF0aCI6Ii9mLzcyZmFkNGYzLWNmOGQtNDgzNi1iMjc0LTFiZjE2MDE3ZWExMi9kNnNvZm1oLTQzMTQxM2UxLTg3MTItNDJjMy1iZDNjLTU5NDFlYjExYzAyZi5wbmciLCJ3aWR0aCI6Ijw9NDgwIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.DltKEPhwFLVbOZ42Ab7tZKnBHklvQGNyqOG_qXjpsSI' },
+  { id: 'kagura',    name: 'Kagura',     img: 'https://static.wikia.nocookie.net/kof/images/4/47/Chizuru_kagura_kof_card.png/revision/latest/scale-to-width-down/250?cb=20150605164821&path-prefix=es' },
+  { id: 'kim',       name: 'Kim',        img: 'https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRa_NtKJYS4YqbqsptequVsETykqyZ_q1YUFN5WraBgLiIS0y45' },
+  { id: 'kim2',      name: 'Kim 2',      img: 'https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/items/222940/fd99886c4ef301b42e4a699880bc403c7857936c.jpg' },
+  { id: 'krizalid',  name: 'Krizalid',   img: 'https://pbs.twimg.com/media/ErOKAIMWMAQlTBP.jpg' },
+  { id: 'krizalid2', name: 'Krizalid 2', img: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcT2sL69LUYJLcLTKNqINoCBSqjHt0jknBwdCU0XuMB3pp0HGQ9u' },
+  { id: 'kula',      name: 'Kula',       img: 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQN7xl1RxEGMUzrhJFDGjLc0Yc-h-mluX1oWP-JhGLlO51Dd-5i' },
+  { id: 'kula2',     name: 'Kula 2',     img: 'https://cdn.suruga-ya.com/database/pics_webp/game/604058095.jpg.webp' },
+  { id: 'kusanagi',  name: 'Kusanagi',   img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw1gPAxd2ddSZawKygWKnGxCghcC1Pi_m-UA&s' },
+  { id: 'kyo',       name: 'Kyo',        img: 'https://www.fightersgeneration.com/nf8/char3/kyo-kusanagi-kof98umw.png' },
+  { id: 'kyo2',      name: 'Kyo 2',      img: 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSHAt8Fqk0mVDyCuWOMGE9TIFQdpagfEeVfEgArAiwk4AZ0HUSB' },
+  { id: 'kyow',      name: 'KyoW',       img: 'https://i.pinimg.com/originals/a8/7d/e1/a87de1e46221ffcc46f915d34bd839ea.png' },
+  { id: 'kyow2',     name: 'KyoW 2',     img: 'https://www.fightersgeneration.com/np9/characters/kyo-kofxiii-card.png' },
+  { id: 'mai',       name: 'Mai',        img: 'https://i.pinimg.com/736x/8c/53/94/8c53943d73dacf995684c35233ef4f6b.jpg' },
+  { id: 'mai2',      name: 'Mai 2',      img: 'https://www.egames.news/__export/1705864716391/sites/debate/img/2024/01/21/zoe_volf_deslumbra_con_su_cosplay_de_mai_shiranui_de_the_king_of_fighters.jpg_554688468.jpg' },
+  { id: 'mature',    name: 'Mature',     img: 'https://i.ebayimg.com/images/g/lG4AAOSwCoVms6yB/s-l1200.jpg' },
+  { id: 'moriya',    name: 'Moriya',     img: 'https://static.wikia.nocookie.net/snk/images/3/37/Moriya-ngbc.jpg/revision/latest/thumbnail/width/360/height/360?cb=20091221024130' },
+  { id: 'moriya2',   name: 'Moriya 2',   img: 'https://www.fightersgeneration.com/nf2/char/moriya-neogeobattlecoliseum-win-portrait.png' },
+  { id: 'nameless',  name: 'Nameless',   img: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/3250cf5a-4291-4d93-be6c-878380420809/d5kcgij-4bb27247-d1d5-4bab-8119-f5464a207a5f.png/v1/fit/w_414,h_439/nameless_kof_um_by_orochidarkkyo_d5kcgij-414w.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NjM0IiwicGF0aCI6Ii9mLzMyNTBjZjVhLTQyOTEtNGQ5My1iZTZjLTg3ODM4MDQyMDgwOS9kNWtjZ2lqLTRiYjI3MjQ3LWQxZDUtNGJhYi04MTE5LWY1NDY0YTIwN2E1Zi5wbmciLCJ3aWR0aCI6Ijw9NTk4In1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.FWuZPYZfpebKBKOPahjOSV7crSDm2LFWDLWUnheUnAw' },
+  { id: 'orochi',    name: 'Orochi',     img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkhr7m93KOjyDsn2ObDJlm5msrWUKiVFi5qcxB1eyUsRZLN7Ek' },
+  { id: 'orochi2',   name: 'Orochi 2',   img: 'https://i.ytimg.com/vi/M4SE-52WiXQ/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLD-YuSBTHv-sf6s5gF-30D5wUNxzw' },
+  { id: 'oswald',    name: 'Oswald',     img: 'https://static.wikia.nocookie.net/kof/images/2/20/Oswald_kof_card.jpg/revision/latest/scale-to-width-down/250?cb=20160204014151&path-prefix=es' },
+  { id: 'ralf',      name: 'Ralf',       img: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2353edce-80ae-4d61-8bbe-7b4a9fd8102a/dii46u8-d90d95da-b5d4-4c40-a7d7-81b591d52e00.jpg/v1/fit/w_414,h_500,q_70,strp/ralf_jones_kof02um_victory_pose_by_thejdvt_dii46u8-414w.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTc0NCIsInBhdGgiOiIvZi8yMzUzZWRjZS04MGFlLTRkNjEtOGJiZS03YjRhOWZkODEwMmEvZGlpNDZ1OC1kOTBkOTVkYS1iNWQ0LTRjNDAtYTdkNy04MWI1OTFkNTJlMDAuanBnIiwid2lkdGgiOiI8PTE0NDQifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.VGrhs4a8xnjVUpzsegrkyQtgDGrxmRvXOU8MPxpS7uc' },
+  { id: 'rock',      name: 'Rock',       img: 'https://e1.pngegg.com/pngimages/932/608/png-clipart-rock-howard-ngbc-victory.png' },
+  { id: 'rugal',     name: 'Rugal',      img: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTJ7VYV_iI27ai98RTIZzKicM9IsA00aWssNOQ5wDemhCnVkrN7' },
+  { id: 'rugal2',    name: 'Rugal 2',    img: 'https://static.wikia.nocookie.net/kofarmageddon/images/2/21/Rugal_2002UM.jpg/revision/latest?cb=20110508035146&path-prefix=es' },
+  { id: 'ryo',       name: 'Ryo',        img: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTahh2Cni5k3WP_aDMWd2CJEDYYayiGv5T6fsbKbW-Ze-UKTnGb' },
+  { id: 'ryo2',      name: 'Ryo 2',      img: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSGyY-vOycDaesT1WtpYKDGYwmv2yZKxLpiBPAnbZo-ERXfUx3v' },
+  { id: 'ryu',       name: 'Ryu',        img: 'https://pbs.twimg.com/media/G77z9-IWgAMhLbw.jpg' },
+  { id: 'ryu2',      name: 'Ryu 2',      img: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRuTc1LKEscXFaFdqc45Pe-IL41C5FmAb7_w0X14aZXFrEzK66_' },
+  { id: 'shermie',   name: 'Shermie',    img: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRg_z0w19fQ82UyJQjEMC-zrvnTor_g7Pmp1oj6ver_x1fFhP9N' },
+  { id: 'shermie2',  name: 'Shermie 2',  img: 'https://i.pinimg.com/originals/70/33/b5/7033b517afcd78d9222bc986408ed342.jpg' },
+  { id: 'shingo',    name: 'Shingo',     img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIfjGLNlLt5JJ0yjvnjplANU7v6UjQo5k0lA&s' },
+  { id: 'terry',     name: 'Terry',      img: 'https://www.egames.news/img/2021/03/07/terry_bogard_en_the_king_of_fighters_allstar_1.jpg?__scale=w:1200,h:900,t:2' },
+  { id: 'terry2',    name: 'Terry 2',    img: 'https://static.zerochan.net/Terry.Bogard.full.4284305.jpg' },
+  { id: 'yashiro',   name: 'Yashiro',    img: 'https://static.wikia.nocookie.net/snk/images/a/ad/KOF2002UM-Yashiro2.png/revision/latest/scale-to-width-down/250?cb=20170919180503' },
+  { id: 'yashiro2',  name: 'Yashiro 2',  img: 'https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQxjQMr_OOcOUG2pMoPP44dlDGAH0mG12wzj965gYKoB5ZcxBn2' },
+  { id: 'zero',      name: 'Zero',       img: 'https://img.3dmgame.com/uploads/allimg/171027/115R26209-3.jpg' },
+  { id: 'zero2',     name: 'Zero 2',     img: 'https://img.3dmgame.com/uploads/allimg/171027/115R2GY-1.jpg' },
+];
+
+const TIERS = ['S','A','B','C','D','F'];
+let tierData = { S:[], A:[], B:[], C:[], D:[], F:[], pool: CHARACTERS.map(c => c.id) };
+let dragId = null;
+
+function getChar(id) { return CHARACTERS.find(c => c.id === id); }
+
+function makeCard(charId) {
+  const ch = getChar(charId);
+  if (!ch) return null;
+  const card = document.createElement('div');
+  card.className = 'char-card';
+  card.draggable = true;
+  card.dataset.id = charId;
+  card.innerHTML = `<img src="${ch.img}" alt="${ch.name}" onerror="this.style.background='#2a1f4a';this.style.height='110px'"><div class="char-name">${ch.name}</div>`;
+  card.addEventListener('dragstart', () => { dragId = charId; setTimeout(() => card.classList.add('dragging'), 0); });
+  card.addEventListener('dragend', () => card.classList.remove('dragging'));
+  return card;
+}
+
+function renderAll() {
+  TIERS.forEach(t => {
+    const el = document.getElementById('tier-' + t);
+    el.innerHTML = '';
+    (tierData[t] || []).forEach(id => { const c = makeCard(id); if(c) el.appendChild(c); });
+  });
+  const pool = document.getElementById('pool');
+  pool.innerHTML = '';
+  (tierData.pool || []).forEach(id => { const c = makeCard(id); if(c) pool.appendChild(c); });
+}
+
+function setupDrop(el) {
+  el.addEventListener('dragover', e => { e.preventDefault(); el.classList.add('drag-over'); });
+  el.addEventListener('dragleave', () => el.classList.remove('drag-over'));
+  el.addEventListener('drop', e => {
+    e.preventDefault();
+    el.classList.remove('drag-over');
+    if (!dragId) return;
+    const destTier = el.dataset.tier;
+    TIERS.forEach(t => { tierData[t] = (tierData[t]||[]).filter(id => id !== dragId); });
+    tierData.pool = (tierData.pool||[]).filter(id => id !== dragId);
+    if (!tierData[destTier]) tierData[destTier] = [];
+    tierData[destTier].push(dragId);
+    dragId = null;
+    renderAll();
+  });
+}
+
+TIERS.forEach(t => setupDrop(document.getElementById('tier-' + t)));
+setupDrop(document.getElementById('pool'));
+
+async function saveAsImage() {
+  const btn = document.querySelector('.btn-img');
+  const status = document.getElementById('status');
+  btn.textContent = '⏳ Generando imagen...';
+  status.textContent = 'Capturando tier list...';
+  try {
+    const zone = document.getElementById('capture-zone');
+    const canvas = await html2canvas(zone, {
+      backgroundColor: '#0a0010', scale: 2, useCORS: true, allowTaint: true, logging: false
+    });
+    const link = document.createElement('a');
+    link.download = 'kof-wingex-tierlist.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    status.textContent = '✅ ¡Imagen descargada!';
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> Guardar como imagen`;
+    setTimeout(() => { status.textContent = ''; }, 3000);
+  } catch(err) {
+    status.textContent = '❌ Error al generar la imagen.';
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> Guardar como imagen`;
+    console.error(err);
+  }
+}
+
+renderAll();
+</script>
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KOF WING EX - Movelist</title>
+<link rel="icon" type="image/png" href="kofwing_200-9.png">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --purple: #7b2ff7;
+    --purple-dark: #4a0d9e;
+    --purple-light: #a855f7;
+    --blue: #3b82f6;
+    --cyan: #06b6d4;
+    --white: #ffffff;
+    --gray: rgba(255,255,255,0.7);
+  }
+
+  body {
+    font-family: 'Rajdhani', sans-serif;
+    background: #0a0010;
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* FONDO MP4 */
+  .bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .bg-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translateX(-50%) translateY(-50%);
+    opacity: 0.5;
+  }
+  .bg-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(10,0,20,0.4) 0%,
+      rgba(10,0,20,0.3) 40%,
+      rgba(10,0,20,0.7) 80%,
+      rgba(10,0,20,1) 100%
+    );
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 40px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+  }
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+  }
+  .nav-brand img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+  }
+  .nav-brand span {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 3px;
+    color: var(--white);
+  }
+  .nav-links {
+    display: flex;
+    gap: 8px;
+    list-style: none;
+  }
+  .nav-links a {
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 2px;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: all 0.3s;
+  }
+  .nav-links a:hover {
+    color: var(--white);
+    background: rgba(123,47,247,0.3);
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(60px, 12vw, 130px);
+    line-height: 0.9;
+    letter-spacing: 4px;
+    color: var(--white);
+    text-shadow:
+      0 0 40px rgba(123,47,247,0.8),
+      0 0 80px rgba(123,47,247,0.4);
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeUp 1s ease 0.3s forwards;
+  }
+
+  .hero-title span {
+    display: block;
+    color: var(--purple-light);
+  }
+
+  .hero-subtitle {
+    font-size: 16px;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-top: 16px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.6s forwards;
+  }
+
+  /* BOTONES */
+  .hero-buttons {
+    margin-top: 56px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 500px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.9s forwards;
+  }
+
+  .btn-main {
+    display: block;
+    padding: 18px 40px;
+    border: 1px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+    color: var(--white);
+    text-decoration: none;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 6px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-main::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--purple), var(--blue));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .btn-main:hover::before { opacity: 1; }
+  .btn-main:hover {
+    border-color: var(--purple-light);
+    transform: translateX(4px);
+    box-shadow: 0 0 30px rgba(123,47,247,0.5);
+  }
+
+  .btn-main span {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* GLITCH EFFECT en título */
+  @keyframes glitch {
+    0% { text-shadow: 0 0 40px rgba(123,47,247,0.8), 0 0 80px rgba(123,47,247,0.4); }
+    20% { text-shadow: -2px 0 #ff00ff, 2px 0 #00ffff, 0 0 40px rgba(123,47,247,0.8); }
+    40% { text-shadow: 0 0 40px rgba(123,47,247,0.8), 0 0 80px rgba(123,47,247,0.4); }
+    60% { text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff, 0 0 40px rgba(123,47,247,0.8); }
+    80% { text-shadow: 0 0 40px rgba(123,47,247,0.8), 0 0 80px rgba(123,47,247,0.4); }
+    100% { text-shadow: 0 0 40px rgba(123,47,247,0.8), 0 0 80px rgba(123,47,247,0.4); }
+  }
+
+  .hero-title { animation: fadeUp 1s ease 0.3s forwards, glitch 4s ease 2s infinite; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* PARTICLES */
+  .particles {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--purple-light);
+    border-radius: 50%;
+    animation: float linear infinite;
+  }
+  @keyframes float {
+    from { transform: translateY(100vh) translateX(0); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    to { transform: translateY(-10vh) translateX(100px); opacity: 0; }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    .hero-title { font-size: 60px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- FONDO MP4 -->
+<div class="bg">
+  <video class="bg-video" autoplay muted loop playsinline poster="fondo.gif">
+    <source src="fondo.mp4" type="video/mp4">
+  </video>
+  <div class="bg-overlay"></div>
+</div>
+
+<!-- PARTÍCULAS -->
+<div class="particles" id="particles"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-brand">
+    <img src="kofwing_200-9.png" alt="logo">
+    <span>KOF WING EX</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Página principal</a></li>
+    <li><a href="roster.html">Roster</a></li>
+    <li><a href="controles.html">Controles</a></li>
+    <li><a href="guia.html">Guía</a></li>
+    <li><a href="tierlist.html">Tier List</a></li>
+    <li><a href="acerca.html">Acerca</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1 class="hero-title">
+    MOVELIST KOF
+    <span>WING EX</span>
+  </h1>
+  <p class="hero-subtitle">Guía completa de movimientos</p>
+
+  <div class="hero-buttons">
+    <a href="roster.html" class="btn-main"><span>ROSTER</span></a>
+    <a href="controles.html" class="btn-main"><span>CONTROLES</span></a>
+    <a href="guia.html" class="btn-main"><span>GUIA</span></a>
+    <a href="tierlist.html" class="btn-main"><span>TIER LIST</span></a>
+    <a href="acerca.html" class="btn-main"><span>ACERCA</span></a>
+  </div>
+</section>
+
+<script>
+  // Partículas
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (Math.random() * 10 + 8) + 's';
+    p.style.animationDelay = (Math.random() * 10) + 's';
+    p.style.width = p.style.height = (Math.random() * 3 + 1) + 'px';
+    p.style.background = Math.random() > 0.5 ? '#a855f7' : '#06b6d4';
+    container.appendChild(p);
+  }
+</script>
+</body>
+</html>

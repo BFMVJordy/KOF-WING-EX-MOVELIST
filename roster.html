@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KOF Wing EX - Roster</title>
+  <link rel="icon" type="image/png" href="kofwing_200-9.png">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      overflow-x: hidden;
+      background: #1a0033;
+    }
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .bg-video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      transform: translateX(-50%) translateY(-50%);
+    }
+    .bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 0, 40, 0.38);
+      z-index: 1;
+    }
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      padding: 100px 20px 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .title      { font-size: 13px; letter-spacing: 6px; color: #cba6f7; text-transform: uppercase; text-shadow: 0 0 12px #cba6f7aa; margin-bottom: 4px; }
+    .title-main { font-size: 38px; font-weight: 700; letter-spacing: 8px; color: #fff; text-shadow: 0 0 24px #cc88ffcc, 0 0 48px #9944ccaa; margin-bottom: 24px; }
+    .row { display: flex; justify-content: center; align-items: center; gap: 10px; }
+    .slot {
+      width: 130px; height: 130px;
+      border: 2px solid rgba(180, 100, 255, 0.55);
+      border-radius: 10px;
+      background: rgba(30, 0, 60, 0.55);
+      backdrop-filter: blur(4px);
+      cursor: pointer;
+      transition: transform 0.18s, border-color 0.18s, box-shadow 0.18s;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      flex-shrink: 0;
+      text-decoration: none;
+    }
+    .slot:hover {
+      transform: scale(1.08);
+      border-color: #cc88ff;
+      box-shadow: 0 0 22px #cc88ffbb, 0 0 8px #aa44ff77;
+      z-index: 10;
+    }
+    .slot img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: top;
+      position: absolute;
+      inset: 0;
+    }
+    .slot .name {
+      position: relative;
+      z-index: 2;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: #fff;
+      text-align: center;
+      background: linear-gradient(transparent, rgba(20,0,40,0.90));
+      width: 100%;
+      padding: 18px 6px 7px;
+      text-transform: uppercase;
+      line-height: 1.3;
+    }
+    .slot .alt-badge {
+      position: absolute;
+      top: 6px; right: 6px;
+      z-index: 3;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      background: rgba(180, 100, 255, 0.75);
+      color: #fff;
+      padding: 2px 5px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+    .slot.secret { border-color: rgba(249, 226, 175, 0.65); background: rgba(40, 25, 0, 0.65); }
+    .slot.secret:hover { border-color: #f9e2af; box-shadow: 0 0 22px #f9e2afbb; }
+    .slot.secret .alt-badge { background: rgba(249,180,50,0.85); }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav style="position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:16px 40px; background:linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);">
+    <a href="index.html" style="display:flex; align-items:center; gap:12px; text-decoration:none;">
+      <img src="kofwing_200-9.png" style="width:40px; height:40px; object-fit:contain;">
+      <span style="font-family:'Rajdhani',sans-serif; font-size:20px; letter-spacing:3px; color:#fff; font-weight:700;">KOF WING EX</span>
+    </a>
+    <ul style="display:flex; gap:8px; list-style:none;">
+      <li><a href="index.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Página principal</a></li>
+      <li><a href="roster.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Roster</a></li>
+      <li><a href="controles.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Controles</a></li>
+      <li><a href="guia.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Guía</a></li>
+      <li><a href="tierlist.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Tier List</a></li>
+      <li><a href="acerca.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Acerca</a></li>
+    </ul>
+  </nav>
+
+  <!-- FONDO MP4 -->
+  <div class="bg">
+    <video class="bg-video" autoplay muted loop playsinline poster="roster.gif">
+      <source src="roster.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <div class="wrapper">
+    <div class="title">KOF WING EX</div>
+    <div class="title-main">ROSTER</div>
+
+    <!-- FILA 1 — 2 -->
+    <div class="row">
+      <a href="Movelist/kyo.html" class="slot"><img src="personajes/Kyo.png"><div class="name">Kyo</div><span class="alt-badge">ALT</span></a>
+      <a href="Movelist/Iori.html" class="slot"><img src="personajes/Iori.png"><div class="name">Iori</div><span class="alt-badge">ALT</span></a>
+    </div>
+
+    <!-- FILA 2 — 4 -->
+    <div class="row">
+      <a href="Movelist/Terry.html" class="slot"><img src="personajes/Terry.png"><div class="name">Terry</div><span class="alt-badge">ALT</span></a>
+      <a href="Movelist/K.html" class="slot"><img src="personajes/K.png"><div class="name">K'</div><span class="alt-badge">ALT</span></a>
+      <a href="Movelist/Ryu.html" class="slot"><img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/84f6d3c7-19b3-471c-99b3-ebe943ca814d/diifob9-63898f30-f00f-40f3-9d6e-673eb9354b6f.png/v1/fit/w_828,h_992/ryu__street_fighter__render_by_incinaneverdies_diifob9-414w-2x.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTE1NiIsInBhdGgiOiIvZi84NGY2ZDNjNy0xOWIzLTQ3MWMtOTliMy1lYmU5NDNjYTgxNGQvZGlpZm9iOS02Mzg5OGYzMC1mMDBmLTQwZjMtOWQ2ZS02NzNlYjkzNTRiNmYucG5nIiwid2lkdGgiOiI8PTk2NCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.dT9V_8_x97OTnnnATdSE94kRVGRCRZvhjuHhEaxHfKM"><div class="name">Ryu</div><span class="alt-badge">ALT</span></a>
+      <a href="Movelist/Rugal.html" class="slot"><img src="personajes/Rugal.png"><div class="name">Rugal</div><span class="alt-badge">ALT</span></a>
+    </div>
+
+    <!-- FILA 3 — 5 -->
+    <div class="row">
+      <a href="Movelist/Athena.html" class="slot"><img src="personajes/Athena.png"><div class="name">Athena</div><span class="alt-badge">ALT</span></a>
+      <a href="Movelist/Geese.html" class="slot"><img src="https://i.pinimg.com/originals/4d/9b/43/4d9b437825a3eed1915dda5d71b031ee.png"><div class="name">Geese</div><span class="alt-badge">ALT</span></a>
+      <a href="Movelist/KyoWo.html" class="slot"><img src="https://i.pinimg.com/originals/a8/7d/e1/a87de1e46221ffcc46f915d34bd839ea.png"><div class="name">Kyo Wo.</div><span class="alt-badge">ALT</span></a>
+      <a href="Movelist/Ash.html" class="slot"><img src="personajes/Ash.png"><div class="name">Ash</div><span class="alt-badge">ALT</span></a>
+      <a href="Movelist/Mature.html" class="slot"><img src="https://i.pinimg.com/originals/03/81/ab/0381abb1b98c4a6ee3253e2d01a69563.png"><div class="name">Mature</div></a>
+    </div>
+
+    <!-- FILA 4 — 6 -->
+    <div class="row">
+      <a href="Movelist/Mai.html" class="slot"><img src="personajes/Mai.png"><div class="name">Mai</div><span class="alt-badge">ALT</span></a>
+      <a href="Movelist/Benimaru.html" class="slot"><img src="personajes/Benimaru.png"><div class="name">Benimaru</div><span class="alt-badge">ALT</span></a>
+      <a href="Movelist/Kim.html" class="slot"><img src="personajes/Kim.png"><div class="name">Kim</div><span class="alt-badge">ALT</span></a>
+      <a href="Movelist/ChunLi.html" class="slot"><img src="personajes/chunli.png"><div class="name">Chun-Li</div><span class="alt-badge">ALT</span></a>
+      <a href="Movelist/Kula.html" class="slot"><img src="personajes/Kula.png"><div class="name">Kula</div><span class="alt-badge">ALT</span></a>
+      <a href="Movelist/Shermie.html" class="slot"><img src="personajes/Shermie.png"><div class="name">Shermie</div><span class="alt-badge">ALT</span></a>
+    </div>
+
+    <!-- FILA 5 — 7 -->
+    <div class="row">
+      <a href="Movelist/Rock.html" class="slot"><img src="personajes/Rock.png"><div class="name">Rock</div></a>
+      <a href="Movelist/Andy.html" class="slot"><img src="personajes/Andy.png"><div class="name">Andy</div></a>
+      <a href="Movelist/Zero.html" class="slot"><img src="personajes/Zero.png"><div class="name">Zero</div><span class="alt-badge">ALT</span></a>
+      <a href="Movelist/Orochi.html" class="slot"><img src="personajes/Orochi.png"><div class="name">Orochi</div><span class="alt-badge">ALT</span></a>
+      <a href="Movelist/Igniz.html" class="slot"><img src="personajes/Igniz.png"><div class="name">Igniz</div><span class="alt-badge">ALT</span></a>
+      <a href="Movelist/Krizalid.html" class="slot"><img src="personajes/Krizalid.png"><div class="name">Krizalid</div><span class="alt-badge">ALT</span></a>
+      <a href="Movelist/Goenitz.html" class="slot"><img src="personajes/Goenitz.png"><div class="name">Goenitz</div></a>
+    </div>
+
+    <!-- FILA 6 — 6 -->
+    <div class="row">
+      <a href="Movelist/Yashiro.html" class="slot"><img src="personajes/Yashiro.png"><div class="name">Yashiro</div><span class="alt-badge">ALT</span></a>
+      <a href="Movelist/Chris.html" class="slot"><img src="personajes/Chris.png"><div class="name">Chris</div><span class="alt-badge">ALT</span></a>
+      <a href="Movelist/Haohmaru.html" class="slot"><img src="personajes/Haohmaru.png"><div class="name">Haohmaru</div><span class="alt-badge">ALT</span></a>
+      <a href="Movelist/Moriya.html" class="slot"><img src="https://www.fightersgeneration.com/nf2/char/moriya-neogeobattlecoliseum-win-portrait.png"><div class="name">Moriya</div><span class="alt-badge">ALT</span></a>
+      <a href="Movelist/Kusanagi.html" class="slot"><img src="https://miro.medium.com/v2/resize:fit:1400/1*HPX_mseKjgv3h81KRoYCUw.png"><div class="name">Kusanagi</div></a>
+      <a href="Movelist/Ryo.html" class="slot"><img src="personajes/Ryo.png"><div class="name">Ryo</div><span class="alt-badge">ALT</span></a>
+    </div>
+
+    <!-- FILA 7 — 5 -->
+    <div class="row">
+      <a href="Movelist/Daimon.html" class="slot"><img src="personajes/Daimon.png"><div class="name">Daimon</div></a>
+      <a href="Movelist/Ralf.html" class="slot"><img src="personajes/Ralf.png"><div class="name">Ralf</div></a>
+      <a href="Movelist/Angel.html" class="slot"><img src="personajes/Angel.png"><div class="name">Angel</div></a>
+      <a href="Movelist/Nameless.html" class="slot"><img src="personajes/Nameless.png"><div class="name">Nameless</div></a>
+      <a href="Movelist/Oswald.html" class="slot"><img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/865f3f82-bfa2-491a-bbaf-cc933c6442ba/dlo3m19-5acdd707-ba79-4790-9f77-d54f5c11ffab.png/v1/fill/w_1190,h_671/oswald_kof_xiv_winner_by_juanxoc_dlo3m19-pre.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NzIyIiwicGF0aCI6Ii9mLzg2NWYzZjgyLWJmYTItNDkxYS1iYmFmLWNjOTMzYzY0NDJiYS9kbG8zbTE5LTVhY2RkNzA3LWJhNzktNDc5MC05Zjc3LWQ1NGY1YzExZmZhYi5wbmciLCJ3aWR0aCI6Ijw9MTI4MCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.XarKKm2lZz79-qVguQ5demMOlB4LdLx-kgldLRgz9-Y"><div class="name">Oswald</div></a>
+    </div>
+
+    <!-- FILA 8 — 4 -->
+    <div class="row">
+      <a href="Movelist/Gato.html" class="slot"><img src="https://www.fightersgeneration.com/np2/char1/gatokofxi.png"><div class="name">Gato</div></a>
+      <a href="Movelist/Jenet.html" class="slot"><img src="personajes/Jenet.png"><div class="name">Jenet</div></a>
+      <a href="Movelist/Kagura.html" class="slot"><img src="personajes/Kagura.png"><div class="name">Kagura</div></a>
+      <a href="Movelist/Shingo.html" class="slot"><img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/865f3f82-bfa2-491a-bbaf-cc933c6442ba/dlm9dlr-cebf815f-aa19-451e-be3e-0c09c4e1fd0a.png/v1/fit/w_828,h_1308/shingo_kof_2002_um_by_juanxoc_dlm9dlr-414w-2x.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MjAyMyIsInBhdGgiOiIvZi84NjVmM2Y4Mi1iZmEyLTQ5MWEtYmJhZi1jYzkzM2M2NDQyYmEvZGxtOWRsci1jZWJmODE1Zi1hYTE5LTQ1MWUtYmUzZS0wYzA5YzRlMWZkMGEucG5nIiwid2lkdGgiOiI8PTEyODAifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.p1YzlcLnCgZ9xd-HkzQFTcVvGITUzNQJxNTaL4O4458"><div class="name">Shingo</div></a>
+    </div>
+
+    <!-- FILA 9 — 2 -->
+    <div class="row">
+      <a href="Movelist/Chang.html" class="slot"><img src="https://www.fightersgeneration.com/characters/chang98-0.gif"><div class="name">Chang</div></a>
+      <a href="Movelist/Evil Ash.html" class="slot"><img src="https://static.wikia.nocookie.net/kof/images/2/26/1815678-select_c_1a.png/revision/latest?cb=20120523223610&path-prefix=es"><div class="name">Evil Ash</div></a>
+    </div>
+
+    <!-- FILA 10 — 1 (secreto) -->
+    <div class="row">
+      <a href="Movelist/Akuma.html" class="slot secret"><img src="https://static.wikia.nocookie.net/oc-fc-death-battles/images/1/16/Akuma.png/revision/latest?cb=20211225032746"><div class="name">Akuma</div><span class="alt-badge">ALT</span></a>
+    </div>
+
+  </div>
+</body>
+</html>
