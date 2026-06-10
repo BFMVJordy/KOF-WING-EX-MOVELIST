@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IORI YAGAMI - KOF Wing EX</title>
+  <link rel="icon" type="image/png" href="kofwing_200-9.png">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Roboto Condensed', sans-serif; background: #0f1123; color: #cdd6f4; }
+
+    /* BANNER HERO */
+    .banner-hero {
+      width: 100%;
+      height: 480px;
+      position: relative;
+      overflow: hidden;
+    }
+    .banner-hero img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+    .banner-hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(15,17,35,0.10) 0%, rgba(15,17,35,0.90) 100%);
+    }
+    .banner-hero .hero-name {
+      position: absolute;
+      bottom: 40px;
+      left: 0; right: 0;
+      text-align: center;
+      z-index: 2;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 72px;
+      font-weight: 700;
+      letter-spacing: 10px;
+      color: #ffffff;
+      text-shadow: 0 0 40px rgba(255,255,255,0.4), 0 4px 24px rgba(0,0,0,0.8);
+      text-transform: uppercase;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 40px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+    }
+    nav a.brand {
+      display: flex; align-items: center; gap: 12px; text-decoration: none;
+    }
+    nav a.brand img { width: 40px; height: 40px; object-fit: contain; }
+    nav a.brand span {
+      font-family: 'Rajdhani', sans-serif; font-size: 20px;
+      letter-spacing: 3px; color: #fff; font-weight: 700;
+    }
+    nav ul { display: flex; gap: 8px; list-style: none; }
+    nav ul a {
+      color: rgba(255,255,255,0.8); text-decoration: none;
+      font-size: 13px; letter-spacing: 2px; font-weight: 600;
+      text-transform: uppercase; padding: 8px 16px; border-radius: 4px;
+      transition: all 0.3s;
+    }
+    nav ul a:hover { color: #fff; background: rgba(123,47,247,0.3); }
+
+    /* SELECTOR DE MODO */
+    .mode-selector {
+      display: flex; justify-content: center; gap: 12px;
+      padding: 20px 12px 0; background: #0f1123;
+    }
+    .mode-btn {
+      font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 700;
+      letter-spacing: 2px; padding: 7px 22px; border-radius: 999px;
+      border: none; cursor: pointer; transition: all 0.2s; text-transform: uppercase;
+    }
+    .mode-btn.normal { background: #1e3a5f; color: #89b4fa; }
+    .mode-btn.normal.active, .mode-btn.normal:hover {
+      background: #2a5080; color: #fff; box-shadow: 0 0 12px #89b4fa66;
+    }
+    .mode-btn.oscuro { background: #2a1f4a; color: #cba6f7; }
+    .mode-btn.oscuro.active, .mode-btn.oscuro:hover {
+      background: #3d2e6e; color: #fff; box-shadow: 0 0 12px #cba6f766;
+    }
+    .mode-btn.berserker { background: #3a1500; color: #fab387; }
+    .mode-btn.berserker.active, .mode-btn.berserker:hover {
+      background: #5a2000; color: #fff; box-shadow: 0 0 12px #fab38766;
+    }
+
+    /* MOVELISTS */
+    .movelist { display: none; }
+    .movelist.active { display: block; }
+
+    /* ESTILOS COMPARTIDOS */
+    .banner-mini { background: #0f1123; padding: 20px 20px 16px; text-align: center; border-bottom: 2px solid #7c6fcd; }
+    .banner-mini .sub { font-size: 11px; color: #7c6fcd; letter-spacing: 3px; margin-bottom: 4px; font-family: 'Rajdhani', sans-serif; }
+    .banner-mini h1 { font-size: 22px; color: #ffffff; font-family: 'Rajdhani', sans-serif; font-weight: 700; letter-spacing: 2px; }
+    .banner-mini .mode-tag { display: inline-block; margin-top: 6px; font-size: 11px; padding: 3px 12px; border-radius: 999px; font-family: 'Rajdhani', sans-serif; letter-spacing: 2px; }
+    .mode-tag-normal   { background: #1e3a5f; color: #89b4fa; }
+    .mode-tag-oscuro   { background: #2a1f4a; color: #cba6f7; }
+    .mode-tag-berserker{ background: #3a1500; color: #fab387; }
+    .banner-mini p { font-size: 12px; color: #6c7086; margin-top: 4px; }
+
+    .container { padding: 0 12px 24px; background: #0f1123; }
+    .section-title { font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 700; color: #7c6fcd; letter-spacing: 3px; padding: 18px 0 6px; text-transform: uppercase; border-bottom: 1px solid #1e2040; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 4px; }
+    thead tr { background: #181a2e; border-bottom: 1px solid #2a2d4a; }
+    thead th { padding: 8px 10px; text-align: left; color: #7c6fcd; font-weight: 700; font-size: 11px; font-family: 'Rajdhani', sans-serif; letter-spacing: 2px; text-transform: uppercase; }
+    tbody tr { border-bottom: 1px solid #181a2e; }
+    tbody tr:hover { background: #181a2e; }
+    tbody td { padding: 9px 10px; vertical-align: middle; }
+    .gif-box { width: 80px; height: 55px; background: #181a2e; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #45475a; text-align: center; border: 1px dashed #2a2d4a; }
+    .move-name { font-weight: 700; font-size: 14px; color: #cdd6f4; font-family: 'Rajdhani', sans-serif; }
+    .sub-move  { color: #a6adc8; font-size: 13px; font-family: 'Rajdhani', sans-serif; padding-left: 12px; font-weight: 600; }
+    .tag { font-size: 10px; padding: 2px 7px; border-radius: 999px; display: inline-block; margin-top: 3px; font-family: 'Roboto Condensed', sans-serif; font-weight: 700; }
+    .tag-especial { background: #2a1f4a; color: #cba6f7; }
+    .tag-super    { background: #3a1a1a; color: #f38ba8; }
+    .tag-ultra    { background: #1a2a1a; color: #a6e3a1; }
+    .tag-oculto   { background: #2a1a3a; color: #f5c2e7; }
+    .tag-agarre   { background: #3a1a2a; color: #f5c2e7; }
+    .tag-derivado { background: #1a2a3a; color: #89dceb; }
+    .cmd  { font-family: monospace; font-size: 13px; color: #89dceb; line-height: 1.7; }
+    .note { font-size: 11px; color: #6c7086; font-style: italic; line-height: 1.5; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="brand">
+    <img src="kofwing_200-9.png" alt="logo">
+    <span>KOF WING EX</span>
+  </a>
+  <ul>
+    <li><a href="../index.html">Página principal</a></li>
+    <li><a href="../roster.html">Roster</a></li>
+    <li><a href="../controles.html">Controles</a></li>
+    <li><a href="../guia.html">Guía</a></li>
+    <li><a href="../tierlist.html">Tier List</a></li>
+    <li><a href="../acerca.html">Acerca</a></li>
+  </ul>
+</nav>
+
+<!-- BANNER HERO -->
+<div class="banner-hero">
+  <img src="https://i.pinimg.com/736x/f5/ae/07/f5ae07febebaaddf03a5544d201bbb91.jpg" alt="Iori Yagami">
+  <div class="hero-name">IORI</div>
+</div>
+
+<!-- SELECTOR DE MODO -->
+<div class="mode-selector">
+  <button class="mode-btn normal active" onclick="setMode('normal')">★ Modo Normal</button>
+  <button class="mode-btn oscuro" onclick="setMode('oscuro')">★ Modo Oscuro</button>
+  <button class="mode-btn berserker" onclick="setMode('berserker')">★ Modo Berserker</button>
+</div>
+
+<!-- ===================== MODO NORMAL ===================== -->
+<div class="movelist active" id="ml-normal">
+  <div class="banner-mini">
+    <div class="sub">KOF WING EX</div>
+    <h1>IORI YAGAMI</h1>
+    <span class="mode-tag mode-tag-normal">★ MODO NORMAL</span>
+    <p>Guía de movimientos e instrucciones en español</p>
+  </div>
+  <div class="container">
+
+    <div class="section-title">Agarres</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Despellejamiento Inverso</div><span class="tag tag-agarre">Agarre · C</span></td><td class="cmd">Cerca, mantener → + C</td><td class="cmd">Cerca, mantener → + C</td><td class="note">—</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Despellejamiento Doble Inverso</div><span class="tag tag-agarre">Agarre · D</span></td><td class="cmd">Cerca, mantener → + D</td><td class="cmd">Cerca, mantener → + D</td><td class="note">—</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Movimientos Particulares</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Externo · Bala Onírica</div><span class="tag tag-especial">Especial</span></td><td class="cmd">Mantener → + AA</td><td class="cmd">Mantener → + AA</td><td class="note">—</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Externo · Hacha Oscura — Dios de la Muerte</div><span class="tag tag-especial">Especial</span></td><td class="cmd">Mantener → + B</td><td class="cmd">Mantener → + B</td><td class="note">Golpe medio; si se cancela sale como golpe alto.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Externo · Quiebre del Lirio</div><span class="tag tag-especial">Especial</span></td><td class="cmd">En el aire: mantener ← + B<br>ó durante retroceso rápido: ↓ + B / ↑ + B</td><td class="cmd">En el aire: mantener ← + B<br>ó durante retroceso rápido: ↓ + B / ↑ + B</td><td class="note">Golpe medio; si el personaje está invertido usar → + B.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Externo · Estaca</div><span class="tag tag-especial">Especial</span></td><td class="cmd">Mantener ↘ + C</td><td class="cmd">Mantener ↘ + C</td><td class="note">Golpe medio; si el rival está en el suelo permite seguimiento al caído.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Habilidades Especiales</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 100 · Quema del Demonio</div><span class="tag tag-especial">Especial</span></td><td class="cmd">→ ↓ → + A/C</td><td class="cmd">↓ → + A/C</td><td class="note">Versión ligera y pesada.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 108 · Barrido Oscuro</div><span class="tag tag-especial">Especial</span></td><td class="cmd">↓ → + A/C</td><td class="cmd">→ + A/C</td><td class="note">Versión ligera y pesada.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 311 · Garra Peinada</div><span class="tag tag-especial">Especial</span></td><td class="cmd">↓ → + B/D</td><td class="cmd">↓ → + B / → + D</td><td class="note">Versión ligera y pesada; la versión pesada puede derivar en cualquier especial o súper, excepto Viento Escoria y Copa de los Ocho Vinos.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 212 · Luna de Koto — Sombra</div><span class="tag tag-especial">Especial</span></td><td class="cmd">↓ ← + B/D</td><td class="cmd">← + B/D</td><td class="note">—</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Viento Escoria</div><span class="tag tag-especial">Especial</span></td><td class="cmd">← ↓ → + A/C</td><td class="cmd">← → + A/C</td><td class="note">Agarre de comando.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 127 · Flor de Aoi</div><span class="tag tag-especial">Especial</span></td><td class="cmd">↓ ← + A/C</td><td class="cmd">← + A/C</td><td class="note">Versión ligera y pesada; se puede ingresar hasta 3 veces; el tercer golpe es golpe medio.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Súper Moves</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Prohibido 1211 · Ocho Doncellas</div><span class="tag tag-super">Súper</span></td><td class="cmd">↓ → ← + A/C<br>ó ↓ → ↓ ← + A/C</td><td class="cmd">A</td><td class="note">Puede derivar en: Flor del Chacal.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="sub-move">┗ Estilo Oculto 316 · Flor del Chacal</div><span class="tag tag-derivado">Derivado</span></td><td class="cmd">Durante Ocho Doncellas: ↓ → ↓ → + A/C</td><td class="cmd">Durante Ocho Doncellas: ↓ + A</td><td class="note">Seguimiento al rival caído.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Oculto 108 · Copa de los Ocho Vinos</div><span class="tag tag-super">Súper</span></td><td class="cmd">↓ ← → + A/C<br>ó ↓ ← ↓ → + A/C</td><td class="cmd">B</td><td class="note">Se puede mantener A/C para cargar; al impactar inmoviliza al rival.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Súper Moves Ocultos</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Oculto 311 · Rev. · Garra Peinada de las Ocho Doncellas</div><span class="tag tag-ultra">Oculto</span></td><td class="cmd">↓ → + O</td><td class="cmd">O</td><td class="note">Golpe medio.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Tres Artes Divinas II · Bautismo de la Luna Onírica</div><span class="tag tag-ultra">Oculto</span></td><td class="cmd">↓ ← + O</td><td class="cmd">← + O</td><td class="note">Golpe medio; se puede mantener O para cargar; durante la carga entra en estado de armadura.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Súper Move Escondido</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Oculto 1219 · Crisol de Llamas</div><span class="tag tag-oculto">Escondido</span></td><td class="cmd">↓ ← → + O</td><td class="cmd">← → + O</td><td class="note">Agarre de comando en movimiento; seguimiento al rival caído.</td></tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<!-- ===================== MODO OSCURO ===================== -->
+<div class="movelist" id="ml-oscuro">
+  <div class="banner-mini">
+    <div class="sub">KOF WING EX</div>
+    <h1>IORI YAGAMI OSCURO</h1>
+    <span class="mode-tag mode-tag-oscuro">★ MODO OSCURO</span>
+    <p>Guía de movimientos e instrucciones en español</p>
+  </div>
+  <div class="container">
+
+    <div class="section-title">Agarres</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Despellejamiento Inverso</div><span class="tag tag-agarre">Agarre · C</span></td><td class="cmd">Cerca, mantener → + C</td><td class="cmd">Cerca, mantener → + C</td><td class="note">—</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Despellejamiento Doble Inverso</div><span class="tag tag-agarre">Agarre · D</span></td><td class="cmd">Cerca, mantener → + D</td><td class="cmd">Cerca, mantener → + D</td><td class="note">—</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Movimientos Particulares</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Externo · Bala Onírica</div><span class="tag tag-especial">Especial</span></td><td class="cmd">Mantener → + AA</td><td class="cmd">Mantener → + AA</td><td class="note">—</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Externo · Hacha Oscura — Dios de la Muerte</div><span class="tag tag-especial">Especial</span></td><td class="cmd">Mantener → + B</td><td class="cmd">Mantener → + B</td><td class="note">Golpe medio; si se cancela sale como golpe alto.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Externo · Quiebre del Lirio</div><span class="tag tag-especial">Especial</span></td><td class="cmd">En el aire: mantener ← + B<br>ó durante retroceso rápido: ↓ + B / ↑ + B</td><td class="cmd">En el aire: mantener ← + B<br>ó durante retroceso rápido: ↓ + B / ↑ + B</td><td class="note">Golpe medio; si el personaje está invertido usar → + B.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Externo · Estaca</div><span class="tag tag-especial">Especial</span></td><td class="cmd">Mantener ↘ + C</td><td class="cmd">Mantener ↘ + C</td><td class="note">Golpe medio; si el rival está en el suelo permite seguimiento al caído.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Habilidades Especiales</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 104 · Caza del Nue</div><span class="tag tag-especial">Especial</span></td><td class="cmd">→ ↓ → + A/C</td><td class="cmd">↓ → + A/C</td><td class="note">Versión ligera y pesada.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 114 · Resolución de Jade</div><span class="tag tag-especial">Especial</span></td><td class="cmd">↓ → + A/C</td><td class="cmd">→ + C</td><td class="note">—</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 401 · Luna de Impacto</div><span class="tag tag-especial">Especial</span></td><td class="cmd">↓ ← + A/C</td><td class="cmd">← + A/C</td><td class="note">Versión ligera y pesada.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 311 · Garra Peinada</div><span class="tag tag-especial">Especial</span></td><td class="cmd">↓ → + B/D</td><td class="cmd">→ + D</td><td class="note">—</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 129 · Cuervo del Alba</div><span class="tag tag-especial">Especial</span></td><td class="cmd">↓ ← + B/D</td><td class="cmd">← + B/D</td><td class="note">—</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 203 · Camelia Martillo</div><span class="tag tag-especial">Especial</span></td><td class="cmd">← ↓ → + A/C</td><td class="cmd">← → + A/C</td><td class="note">Agarre de comando.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Súper Moves</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Prohibido 1211 · Ocho Doncellas</div><span class="tag tag-super">Súper</span></td><td class="cmd">↓ → ← + A/C<br>ó ↓ → ↓ ← + A/C</td><td class="cmd">A</td><td class="note">Durante el modo Furia se puede derivar en MAX Ocho Cuervos con ↓ → ↓ → ↓ → + O.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Prohibido 1218 · Ocho Cuervos</div><span class="tag tag-super">Súper</span></td><td class="cmd">↓ → ↓ → + B/D</td><td class="cmd">B</td><td class="note">La versión MAX permite seguimiento al rival caído.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Súper Moves Ocultos</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Oculto 1111 · Gran Alma Celestial ₁</div><span class="tag tag-ultra">Oculto</span></td><td class="cmd">↓ → + O</td><td class="cmd">O</td><td class="note">—</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Prohibido · Danza Caótica de Sangre</div><span class="tag tag-ultra">Oculto</span></td><td class="cmd">↓ ← + O</td><td class="cmd">← + O</td><td class="note">—</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Súper Moves Escondidos</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Prohibido 77 · Viento Maldito</div><span class="tag tag-oculto">Escondido</span></td><td class="cmd">↓ → ↓ → + O</td><td class="cmd">↓ → ↓ → + O</td><td class="note">No disponible en modo Furia. Al activar: daño continuo por tiempo, todas las técnicas sin costo de energía, cada ataque incluye un bloqueo automático, cancelaciones ilimitadas. Cuesta 2 barras de energía.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Oculto 1111 · Gran Alma Celestial ₂</div><span class="tag tag-oculto">Escondido</span></td><td class="cmd">↑ ↑ + O</td><td class="cmd">↑ ↑ + O</td><td class="note">—</td></tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<!-- ===================== MODO BERSERKER ===================== -->
+<div class="movelist" id="ml-berserker">
+  <div class="banner-mini">
+    <div class="sub">KOF WING EX</div>
+    <h1>IORI YAGAMI BERSERKER</h1>
+    <span class="mode-tag mode-tag-berserker">★ MODO BERSERKER</span>
+    <p>Guía de movimientos e instrucciones en español</p>
+  </div>
+  <div class="container">
+
+    <div class="section-title">Agarres</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Despellejamiento Inverso</div><span class="tag tag-agarre">Agarre · C</span></td><td class="cmd">Cerca, mantener → + C</td><td class="cmd">Cerca, mantener → + C</td><td class="note">—</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Despellejamiento Doble Inverso</div><span class="tag tag-agarre">Agarre · D</span></td><td class="cmd">Cerca, mantener → + D</td><td class="cmd">Cerca, mantener → + D</td><td class="note">—</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Movimientos Particulares</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Externo · Bala Onírica</div><span class="tag tag-especial">Especial</span></td><td class="cmd">Mantener → + AA</td><td class="cmd">Mantener → + AA</td><td class="note">—</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Externo · Hacha Oscura — Dios de la Muerte</div><span class="tag tag-especial">Especial</span></td><td class="cmd">Mantener → + B</td><td class="cmd">Mantener → + B</td><td class="note">Golpe medio; si se cancela sale como golpe alto.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Externo · Quiebre del Lirio</div><span class="tag tag-especial">Especial</span></td><td class="cmd">En el aire: mantener ← + B<br>ó durante retroceso rápido: ↓ + B / ↑ + B</td><td class="cmd">En el aire: mantener ← + B<br>ó durante retroceso rápido: ↓ + B / ↑ + B</td><td class="note">Golpe medio; si el personaje está invertido usar → + B.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Habilidades Especiales</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 100 · Quema del Demonio</div><span class="tag tag-especial">Especial</span></td><td class="cmd">→ ↓ → + A/C</td><td class="cmd">↓ → + A/C</td><td class="note">Versión ligera y pesada.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 108 · Barrido Oscuro</div><span class="tag tag-especial">Especial</span></td><td class="cmd">↓ → + A/C</td><td class="cmd">→ + A/C</td><td class="note">Versión ligera y pesada.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 311 · Garra Peinada</div><span class="tag tag-especial">Especial</span></td><td class="cmd">↓ → + B/D</td><td class="cmd">↓ → + B / → + D</td><td class="note">Versión ligera y pesada; la versión pesada puede derivar en cualquier especial o súper, excepto Viento Escoria y Copa de los Ocho Vinos.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 212 · Luna de Koto — Sombra</div><span class="tag tag-especial">Especial</span></td><td class="cmd">↓ ← + B/D</td><td class="cmd">← + B/D</td><td class="note">—</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Viento Escoria</div><span class="tag tag-especial">Especial</span></td><td class="cmd">← ↓ → + A/C</td><td class="cmd">← → + A/C</td><td class="note">Agarre de comando.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 127 · Flor de Aoi</div><span class="tag tag-especial">Especial</span></td><td class="cmd">↓ ← + A/C</td><td class="cmd">← + A/C</td><td class="note">Versión ligera y pesada; se puede ingresar hasta 3 veces; el tercer golpe es golpe medio.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Súper Moves</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Prohibido 1211 · Ocho Doncellas MAX</div><span class="tag tag-super">Súper</span></td><td class="cmd">↓ → ← + A/C<br>ó ↓ → ↓ ← + A/C</td><td class="cmd">A</td><td class="note">—</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Oculto 108 · Copa de los Ocho Vinos</div><span class="tag tag-super">Súper</span></td><td class="cmd">↓ ← → + A/C</td><td class="cmd">B</td><td class="note">Se puede mantener A/C para cargar; al impactar inmoviliza al rival.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Oculto 1219 · Crisol de Llamas ₁</div><span class="tag tag-super">Súper</span></td><td class="cmd">↓ → ↓ → + B/D</td><td class="cmd">← → + B</td><td class="note">Agarre de comando en movimiento; seguimiento al rival caído.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Súper Moves Ocultos</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Sangre Furiosa · Berserker de Sangre</div><span class="tag tag-ultra">Oculto</span></td><td class="cmd">↓ → + O</td><td class="cmd">O</td><td class="note">—</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Tres Artes Divinas II · Bautismo de Sangre</div><span class="tag tag-ultra">Oculto</span></td><td class="cmd">↓ ← + O</td><td class="cmd">← + O</td><td class="note">Armadura; se puede mantener O para cargar, durante la carga entra en estado de armadura; tras cargar un tramo se puede soltar voluntariamente; también se libera si el rival recibe daño.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Súper Moves Escondidos</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Oculto 1219 · Crisol de Llamas ₂</div><span class="tag tag-oculto">Escondido</span></td><td class="cmd">↓ ← ↓ ← → + O<br>ó ↓ ← ↓ → + O<br>ó ↓ ← → + O</td><td class="cmd">↓ ← ↓ → + O / ← → + O</td><td class="note">Agarre de comando en movimiento; seguimiento al rival caído.</td></tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<script>
+  function setMode(mode) {
+    document.getElementById('ml-normal').classList.toggle('active', mode === 'normal');
+    document.getElementById('ml-oscuro').classList.toggle('active', mode === 'oscuro');
+    document.getElementById('ml-berserker').classList.toggle('active', mode === 'berserker');
+    document.querySelector('.mode-btn.normal').classList.toggle('active', mode === 'normal');
+    document.querySelector('.mode-btn.oscuro').classList.toggle('active', mode === 'oscuro');
+    document.querySelector('.mode-btn.berserker').classList.toggle('active', mode === 'berserker');
+  }
+</script>
+
+</body>
+</html>

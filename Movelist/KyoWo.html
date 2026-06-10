@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KYO KUSANAGI W - KOF Wing EX</title>
+  <link rel="icon" type="image/png" href="kofwing_200-9.png">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Roboto Condensed', sans-serif; background: #0f1123; color: #cdd6f4; }
+
+    .banner-hero { width: 100%; height: 480px; position: relative; overflow: hidden; }
+    .banner-hero img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+    .banner-hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(15,17,35,0.10) 0%, rgba(15,17,35,0.90) 100%); }
+    .banner-hero .hero-name { position: absolute; bottom: 40px; left: 0; right: 0; text-align: center; z-index: 2; font-family: 'Rajdhani', sans-serif; font-size: 72px; font-weight: 700; letter-spacing: 10px; color: #ffffff; text-shadow: 0 0 40px rgba(255,255,255,0.4), 0 4px 24px rgba(0,0,0,0.8); text-transform: uppercase; }
+
+    .mode-selector { display: flex; justify-content: center; gap: 12px; padding: 20px 12px 0; background: #0f1123; }
+    .mode-btn { font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 2px; padding: 7px 22px; border-radius: 999px; border: none; cursor: pointer; transition: all 0.2s; text-transform: uppercase; }
+    .mode-btn.blanco { background: #2a2a3a; color: #cdd6f4; }
+    .mode-btn.blanco.active, .mode-btn.blanco:hover { background: #3a3a4a; color: #fff; box-shadow: 0 0 12px #cdd6f466; }
+    .mode-btn.negro { background: #181a2e; color: #7c6fcd; border: 1px solid #45475a; }
+    .mode-btn.negro.active, .mode-btn.negro:hover { background: #2a2d4a; color: #fff; box-shadow: 0 0 12px #7c6fcd66; }
+
+    .movelist { display: none; }
+    .movelist.active { display: block; }
+
+    .banner-mini { background: #0f1123; padding: 20px 20px 16px; text-align: center; border-bottom: 2px solid #7c6fcd; }
+    .banner-mini .sub { font-size: 11px; color: #7c6fcd; letter-spacing: 3px; margin-bottom: 4px; font-family: 'Rajdhani', sans-serif; }
+    .banner-mini h1 { font-size: 22px; color: #ffffff; font-family: 'Rajdhani', sans-serif; font-weight: 700; letter-spacing: 2px; }
+    .banner-mini .mode-tag { display: inline-block; margin-top: 6px; font-size: 11px; padding: 3px 12px; border-radius: 999px; font-family: 'Rajdhani', sans-serif; letter-spacing: 2px; }
+    .mode-tag-blanco { background: #2a2a3a; color: #cdd6f4; }
+    .mode-tag-negro  { background: #181a2e; color: #7c6fcd; border: 1px solid #45475a; }
+    .banner-mini p { font-size: 12px; color: #6c7086; margin-top: 4px; }
+
+    .container { padding: 0 12px 24px; background: #0f1123; }
+    .section-title { font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 700; color: #7c6fcd; letter-spacing: 3px; padding: 18px 0 6px; margin-bottom: 0; text-transform: uppercase; border-bottom: 1px solid #1e2040; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 4px; }
+    thead tr { background: #181a2e; border-bottom: 1px solid #2a2d4a; }
+    thead th { padding: 8px 10px; text-align: left; color: #7c6fcd; font-weight: 700; font-size: 11px; font-family: 'Rajdhani', sans-serif; letter-spacing: 2px; text-transform: uppercase; }
+    tbody tr { border-bottom: 1px solid #181a2e; }
+    tbody tr:hover { background: #181a2e; }
+    tbody td { padding: 9px 10px; vertical-align: middle; }
+    .gif-box { width: 80px; height: 55px; background: #181a2e; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #45475a; text-align: center; border: 1px dashed #2a2d4a; }
+    .move-name { font-weight: 700; font-size: 14px; color: #cdd6f4; font-family: 'Rajdhani', sans-serif; }
+    .d1 { color: #a6adc8; font-size: 13px; font-family: 'Rajdhani', sans-serif; padding-left: 10px; font-weight: 600; }
+    .d2 { color: #89b4fa; font-size: 13px; font-family: 'Rajdhani', sans-serif; padding-left: 22px; font-weight: 600; }
+    .d3 { color: #89dceb; font-size: 13px; font-family: 'Rajdhani', sans-serif; padding-left: 34px; font-weight: 600; }
+    .d4 { color: #a6e3a1; font-size: 13px; font-family: 'Rajdhani', sans-serif; padding-left: 46px; font-weight: 600; }
+    .tag { font-size: 10px; padding: 2px 7px; border-radius: 999px; display: inline-block; margin-top: 3px; font-family: 'Roboto Condensed', sans-serif; font-weight: 700; }
+    .tag-especial { background: #2a1f4a; color: #cba6f7; }
+    .tag-super    { background: #3a1a1a; color: #f38ba8; }
+    .tag-ultra    { background: #1a2a1a; color: #a6e3a1; }
+    .tag-oculto   { background: #2a1a3a; color: #f5c2e7; }
+    .tag-agarre   { background: #3a1a2a; color: #f5c2e7; }
+    .tag-d1 { background: #1a2a3a; color: #89dceb; }
+    .tag-d2 { background: #1a1a3a; color: #89b4fa; }
+    .tag-d3 { background: #1a2a1a; color: #a6e3a1; }
+    .cmd  { font-family: monospace; font-size: 13px; color: #89dceb; line-height: 1.7; }
+    .note { font-size: 11px; color: #6c7086; font-style: italic; line-height: 1.5; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav style="position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:16px 40px; background:linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);">
+  <a href="index.html" style="display:flex; align-items:center; gap:12px; text-decoration:none;">
+    <img src="kofwing_200-9.png" style="width:40px; height:40px; object-fit:contain;">
+    <span style="font-family:'Rajdhani',sans-serif; font-size:20px; letter-spacing:3px; color:#fff; font-weight:700;">KOF WING EX</span>
+  </a>
+  <ul style="display:flex; gap:8px; list-style:none;">
+    <li><a href="../index.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Página principal</a></li>
+    <li><a href="../roster.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Roster</a></li>
+    <li><a href="../controles.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Controles</a></li>
+    <li><a href="../guia.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Guía</a></li>
+    <li><a href="../tierlist.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Tier List</a></li>
+    <li><a href="../acerca.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Acerca</a></li>
+  </ul>
+</nav>
+
+<!-- BANNER HERO -->
+<div class="banner-hero">
+  <img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/2d511190-d08b-4afe-bef2-f764a984657b/d4kzzzy-03e66f43-0fe3-4b3d-93b1-4a372dccf360.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi8yZDUxMTE5MC1kMDhiLTRhZmUtYmVmMi1mNzY0YTk4NDY1N2IvZDRrenp6eS0wM2U2NmY0My0wZmUzLTRiM2QtOTNiMS00YTM3MmRjY2YzNjAuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.UD_tvGjZEcH44IMhiBQZuNe2zUQvTiG3ikw79a3NDEM" alt="Kyo Kusanagi W">
+  <div class="hero-name">KYO W.</div>
+</div>
+
+<!-- SELECTOR -->
+<div class="mode-selector">
+  <button class="mode-btn blanco active" onclick="setMode('blanco')">★ MODO NORMAL</button>
+  <button class="mode-btn negro" onclick="setMode('negro')">★ MODO OSCURO</button>
+</div>
+
+<!-- ===================== VERSIÓN BLANCA ===================== -->
+<div class="movelist active" id="ml-blanco">
+  <div class="banner-mini">
+    <div class="sub">KOF WING EX</div>
+    <h1>KYO KUSANAGI</h1>
+    <span class="mode-tag mode-tag-blanco">★ MODO NORMAL</span>
+    <p>Guía de movimientos e instrucciones en español</p>
+  </div>
+  <div class="container">
+
+    <div class="section-title">Agarres</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Arrancar el Hierro</div><span class="tag tag-agarre">Agarre · C</span></td><td class="cmd">Cerca, mantener → + C</td><td class="cmd">Cerca, mantener → + C</td><td class="note">—</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Lanzamiento de Espalda Instantáneo</div><span class="tag tag-agarre">Agarre · D</span></td><td class="cmd">Cerca, mantener → + D</td><td class="cmd">Cerca, mantener → + D</td><td class="note">—</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Movimientos Particulares</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Externo · Hacha Solar</div><span class="tag tag-especial">Especial</span></td><td class="cmd">Mantener → + B</td><td class="cmd">Mantener → + B</td><td class="note">Golpe medio; si se cancela sale como golpe alto.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Externo · Caída del Inframundo</div><span class="tag tag-especial">Especial</span></td><td class="cmd">En el aire: mantener ↓ + C</td><td class="cmd">En el aire: mantener ↓ + C</td><td class="note">Golpe medio.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 88</div><span class="tag tag-especial">Especial</span></td><td class="cmd">Mantener ↘ + D</td><td class="cmd">Mantener ↘ + D</td><td class="note">Golpe bajo.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Habilidades Especiales</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 100 · Quema del Demonio ₁</div><span class="tag tag-especial">Especial</span></td><td class="cmd">→ ↓ → + A/C</td><td class="cmd">↓ → + A/C</td><td class="note">Versión ligera y pesada.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 75 · Revisado</div><span class="tag tag-especial">Especial</span></td><td class="cmd">↓ → + BB/DD</td><td class="cmd">→ + DD</td><td class="note">—</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">R.E.D. Kick</div><span class="tag tag-especial">Especial</span></td><td class="cmd">↓ ← + B/D</td><td class="cmd">← + B/D</td><td class="note">Versión ligera y pesada; golpe medio.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">R.E.D. Kick (aéreo)</div><span class="tag tag-especial">Especial</span></td><td class="cmd">En el aire: ↓ ← + B/D</td><td class="cmd">En el aire: ← + B/D</td><td class="note">—</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 427 · Aplastamiento de Hierro</div><span class="tag tag-especial">Especial</span></td><td class="cmd">→ ↓ ← + B/D<br>ó durante Mordida Salvaje: ↓ ← + B/D</td><td class="cmd">↓ ← + B/D<br>ó durante Mordida Salvaje: ← + B/D</td><td class="note">Versión ligera y pesada.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 427 · Aplastamiento de Hierro · Revisado</div><span class="tag tag-especial">Especial</span></td><td class="cmd">→ ← ↓ → + B/D</td><td class="cmd">← → + B/D</td><td class="note">Versión ligera y pesada.</td></tr>
+
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 115 · Mordida Venenosa</div><span class="tag tag-especial">Especial</span></td><td class="cmd">↓ → + C</td><td class="cmd">→ + A/C</td><td class="note">Puede derivar en: Canto del Crimen y Mordida Salvaje ₂.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="d1">┗ Estilo 401 · Canto del Crimen</div><span class="tag tag-d1">Derivado nv.1</span></td><td class="cmd">Durante Mordida Venenosa: A/C</td><td class="cmd">Durante Mordida Venenosa: C</td><td class="note">Puede derivar en: Canto del Castigo.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="d2">  ┗ Estilo 402 · Canto del Castigo</div><span class="tag tag-d2">Derivado nv.2</span></td><td class="cmd">Durante Canto del Crimen: A/C</td><td class="cmd">Durante Canto del Crimen: C</td><td class="note">Puede derivar en: Quema del Demonio ₂.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="d3">    ┗ Estilo 100 · Quema del Demonio ₂</div><span class="tag tag-d3">Derivado nv.3</span></td><td class="cmd">Durante Canto del Castigo: C</td><td class="cmd">Durante Canto del Castigo: C</td><td class="note">—</td></tr>
+
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 124 · Mordida Salvaje ₁</div><span class="tag tag-especial">Especial</span></td><td class="cmd">↓ → + A</td><td class="cmd">← + A/C</td><td class="note">Puede derivar en: Nueve Heridas ₁, Ocho Manchas ₂ y Aplastamiento de Hierro.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="d1">┗ Estilo 128 · Nueve Heridas ₁</div><span class="tag tag-d1">Derivado nv.1</span></td><td class="cmd">Durante Mordida Salvaje ₁: A/C</td><td class="cmd">Durante Mordida Salvaje ₁: C</td><td class="note">Puede derivar en: Ocho Manchas ₁ y Siete Cascadas ₁.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="d2">  ┗ Estilo 127 · Ocho Manchas ₁</div><span class="tag tag-d2">Derivado nv.2</span></td><td class="cmd">Durante Nueve Heridas: A/C</td><td class="cmd">Durante Nueve Heridas: C</td><td class="note">Golpe medio.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="d2">  ┗ Estilo 125 · Siete Cascadas ₁</div><span class="tag tag-d2">Derivado nv.2</span></td><td class="cmd">Durante Ocho Manchas ₂: B/D<br>ó Durante Nueve Heridas ₁: B/D</td><td class="cmd">Durante Ocho Manchas ₂: D / ↓+B<br>ó Durante Nueve Heridas ₁: D</td><td class="note">Versión ligera y pesada.</td></tr>
+
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="d1">┗ Estilo 127 · Ocho Manchas ₂</div><span class="tag tag-d1">Derivado nv.1</span></td><td class="cmd">Durante Mordida Salvaje: ↓ ← + A/C</td><td class="cmd">Durante Mordida Salvaje: ← + A</td><td class="note">Golpe medio; puede derivar en: Perforación Exterior, Luna de Koto Sol y Siete Cascadas ₁.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="d2">  ┗ Estilo Externo · Perforación</div><span class="tag tag-d2">Derivado nv.2</span></td><td class="cmd">Durante Ocho Manchas ₂: A/C</td><td class="cmd">Durante Ocho Manchas ₂: C</td><td class="note">Golpe bajo; seguimiento al rival caído.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="d2">  ┗ Estilo 212 · Luna de Koto — Sol</div><span class="tag tag-d2">Derivado nv.2</span></td><td class="cmd">Durante Ocho Manchas ₂: → ↓ ← + B/D</td><td class="cmd">Durante Ocho Manchas ₂: ↓ ← + B/D</td><td class="note">Seguimiento al rival caído.</td></tr>
+
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="d1">┗ Estilo 124 · Mordida Salvaje ₂</div><span class="tag tag-d1">Derivado nv.1</span></td><td class="cmd">Durante Mordida Venenosa: ↓ → + C</td><td class="cmd">Durante Mordida Venenosa: → + A/C</td><td class="note">Puede derivar en: Nueve Heridas ₂, Ocho Manchas ₂ y Aplastamiento de Hierro.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="d2">  ┗ Estilo 128 · Nueve Heridas ₂</div><span class="tag tag-d2">Derivado nv.2</span></td><td class="cmd">Durante Mordida Salvaje ₂: A/C</td><td class="cmd">Durante Mordida Salvaje ₂: A/C</td><td class="note">Puede derivar en: Ocho Manchas ₁ y Siete Cascadas ₂.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="d3">    ┗ Estilo 125 · Siete Cascadas ₂</div><span class="tag tag-d3">Derivado nv.3</span></td><td class="cmd">Durante Nueve Heridas ₂: B/D</td><td class="cmd">Durante Nueve Heridas ₂: D / ↓+B</td><td class="note">Versión ligera y pesada; la versión pesada puede derivar en: Estilo 123 · Llama Abrasadora.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Súper Moves</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="d4">      ┗ Estilo 123 · Llama Abrasadora</div><span class="tag tag-super">Súper · Derivado</span></td><td class="cmd">Durante Siete Cascadas ₂: → ↓ ← + A/C</td><td class="cmd">Durante Siete Cascadas ₂: ↓ + A</td><td class="note">Solo se puede lanzar desde la cadena Mordida Venenosa → Mordida Salvaje ₂ → Nueve Heridas ₂ → Siete Cascadas ₂.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 182</div><span class="tag tag-super">Súper</span></td><td class="cmd">↓ → ↓ → + A/C<br>ó ↓ → → + A/C</td><td class="cmd">A</td><td class="note">Se puede mantener A/C para cargar; durante la carga entra en estado de armadura.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Oculto 108 · Gran Guadaña de la Gran Serpiente</div><span class="tag tag-super">Súper</span></td><td class="cmd">↓ ← → + A/C<br>ó ↓ ← ↓ → + A/C</td><td class="cmd">B</td><td class="note">Se puede mantener A/C para cargar.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Oculto 108 · Gran Guadaña de la Gran Serpiente (aéreo)</div><span class="tag tag-super">Súper</span></td><td class="cmd">En el aire: ↓ ← → + A/C<br>ó En el aire: ↓ ← ↓ → + A/C</td><td class="cmd">En el aire: ↓ + B</td><td class="note">—</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Súper Moves Ocultos</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Arte Secreta de la Batalla Final · Diez Puños</div><span class="tag tag-ultra">Oculto</span></td><td class="cmd">↓ → + O</td><td class="cmd">O</td><td class="note">Seguimiento universal.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 524 · Polvo Divino</div><span class="tag tag-ultra">Oculto</span></td><td class="cmd">↓ ← + O</td><td class="cmd">← + O</td><td class="note">Agarre de comando.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Súper Move Escondido</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Arte Secreta de la Batalla Final · Sin Estilo · Primer Movimiento</div><span class="tag tag-oculto">Escondido</span></td><td class="cmd">↓ → ↓ → + CD</td><td class="cmd">↓ → ↓ → + CD</td><td class="note">Fuera del modo Furia consume 2 barras de energía; mantener CD puede derivar en: Estado Revolucionario.</td></tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<!-- ===================== VERSIÓN NEGRA ===================== -->
+<div class="movelist" id="ml-negro">
+  <div class="banner-mini">
+    <div class="sub">KOF WING EX</div>
+    <h1>KYO KUSANAGI</h1>
+    <span class="mode-tag mode-tag-negro">★ MODO OSCURO</span>
+    <p>Guía de movimientos e instrucciones en español</p>
+  </div>
+  <div class="container">
+
+    <div class="section-title">Agarres</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Arrancar el Hierro</div><span class="tag tag-agarre">Agarre · C</span></td><td class="cmd">Cerca, mantener → + C</td><td class="cmd">Cerca, mantener → + C</td><td class="note">—</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Lanzamiento de Espalda Instantáneo</div><span class="tag tag-agarre">Agarre · D</span></td><td class="cmd">Cerca, mantener → + D</td><td class="cmd">Cerca, mantener → + D</td><td class="note">—</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Movimientos Particulares</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Externo · Hacha Solar</div><span class="tag tag-especial">Especial</span></td><td class="cmd">Mantener → + B<br>ó durante Ocho Manchas ₂: B</td><td class="cmd">Mantener → + B<br>ó durante Ocho Manchas ₂: → + B</td><td class="note">Golpe medio; si se cancela sale como golpe alto.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Externo · Caída del Inframundo</div><span class="tag tag-especial">Especial</span></td><td class="cmd">En el aire: mantener ↓ + C</td><td class="cmd">En el aire: mantener ↓ + C</td><td class="note">Golpe medio.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 88</div><span class="tag tag-especial">Especial</span></td><td class="cmd">Mantener ↘ + D<br>ó durante Ocho Manchas ₂: D</td><td class="cmd">Mantener ↘ + D<br>ó durante Ocho Manchas ₂: D</td><td class="note">Golpe bajo.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Habilidades Especiales</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 100 · Quema del Demonio ₁</div><span class="tag tag-especial">Especial</span></td><td class="cmd">→ ↓ → + A/C</td><td class="cmd">↓ → + A/C</td><td class="note">Versión ligera y pesada.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 108 · Barrido Oscuro</div><span class="tag tag-especial">Especial</span></td><td class="cmd">↓ ← + A/C</td><td class="cmd">↓ ← + A/C</td><td class="note">Versión ligera y pesada.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 75 · Revisado</div><span class="tag tag-especial">Especial</span></td><td class="cmd">↓ → + BB/DD</td><td class="cmd">→ + DD</td><td class="note">—</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 101 · Carro Neblinoso</div><span class="tag tag-especial">Especial</span></td><td class="cmd">↓ ← + B/D</td><td class="cmd">← + B/D</td><td class="note">Versión ligera y pesada; golpe medio.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 212 · Luna de Koto — Sol ₁</div><span class="tag tag-especial">Especial</span></td><td class="cmd">→ ↓ ← + B/D</td><td class="cmd">↓ ← + B/D</td><td class="note">Versión ligera y pesada.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 110 · Carro de Plomo</div><span class="tag tag-especial">Especial</span></td><td class="cmd">→ ↓ → + B/D</td><td class="cmd">↓ → + B/D</td><td class="note">—</td></tr>
+
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 115 · Mordida Venenosa</div><span class="tag tag-especial">Especial</span></td><td class="cmd">↓ → + C</td><td class="cmd">→ + A/C</td><td class="note">Puede derivar en: Canto del Crimen.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="d1">┗ Estilo 401 · Canto del Crimen</div><span class="tag tag-d1">Derivado nv.1</span></td><td class="cmd">Durante Mordida Venenosa: A/C</td><td class="cmd">Durante Mordida Venenosa: C</td><td class="note">Puede derivar en: Canto del Castigo.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="d2">  ┗ Estilo 402 · Canto del Castigo</div><span class="tag tag-d2">Derivado nv.2</span></td><td class="cmd">Durante Canto del Crimen: A/C</td><td class="cmd">Durante Canto del Crimen: C</td><td class="note">Puede derivar en: Quema del Demonio ₂.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="d3">    ┗ Estilo 100 · Quema del Demonio ₂</div><span class="tag tag-d3">Derivado nv.3</span></td><td class="cmd">Durante Canto del Castigo: C</td><td class="cmd">Durante Canto del Castigo: C</td><td class="note">—</td></tr>
+
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 124 · Mordida Salvaje</div><span class="tag tag-especial">Especial</span></td><td class="cmd">↓ → + A</td><td class="cmd">← + A/C</td><td class="note">Puede derivar en: Nueve Heridas, Ocho Manchas ₂ y Aplastamiento de Hierro.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="d1">┗ Estilo 128 · Nueve Heridas</div><span class="tag tag-d1">Derivado nv.1</span></td><td class="cmd">Durante Mordida Salvaje: A/C</td><td class="cmd">Durante Mordida Salvaje: C</td><td class="note">Puede derivar en: Aplastamiento de Hierro (ligero), Ocho Manchas ₁ y Siete Cascadas.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="d2">  ┗ Estilo 427 · Aplastamiento de Hierro (ligero)</div><span class="tag tag-d2">Derivado nv.2</span></td><td class="cmd">Durante Nueve Heridas: ↓ ← + B/D</td><td class="cmd">Durante Nueve Heridas: ← + B/D</td><td class="note">—</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="d2">  ┗ Estilo 127 · Ocho Manchas ₁</div><span class="tag tag-d2">Derivado nv.2</span></td><td class="cmd">Durante Nueve Heridas: A/C</td><td class="cmd">Durante Nueve Heridas: C</td><td class="note">Golpe medio.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="d1">┗ Estilo 427 · Aplastamiento de Hierro (pesado)</div><span class="tag tag-d1">Derivado nv.1</span></td><td class="cmd">Durante Mordida Salvaje: ↓ ← + B/D</td><td class="cmd">Durante Mordida Salvaje: ← + B/D</td><td class="note">—</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="d2">  ┗ Estilo 125 · Siete Cascadas</div><span class="tag tag-d2">Derivado nv.2</span></td><td class="cmd">Durante Nueve Heridas: B/D</td><td class="cmd">Durante Nueve Heridas: D</td><td class="note">—</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="d1">┗ Estilo 127 · Ocho Manchas ₂</div><span class="tag tag-d1">Derivado nv.1</span></td><td class="cmd">Durante Mordida Salvaje: ↓ ← + A/C</td><td class="cmd">Durante Mordida Salvaje: ← + A</td><td class="note">Golpe medio; puede derivar en: Perforación Exterior, Luna de Koto Sol ₂, Hacha Solar y Estilo 88.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="d2">  ┗ Estilo Externo · Perforación</div><span class="tag tag-d2">Derivado nv.2</span></td><td class="cmd">Durante Ocho Manchas ₂: A/C</td><td class="cmd">Durante Ocho Manchas ₂: C</td><td class="note">Golpe bajo; seguimiento al rival caído.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="d2">  ┗ Estilo 212 · Luna de Koto — Sol ₂</div><span class="tag tag-d2">Derivado nv.2</span></td><td class="cmd">Durante Ocho Manchas ₂: → ↓ ← + B/D</td><td class="cmd">Durante Ocho Manchas ₂: C</td><td class="note">Seguimiento al rival caído.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Súper Moves</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 182</div><span class="tag tag-super">Súper</span></td><td class="cmd">↓ → ↓ → + A/C</td><td class="cmd">A</td><td class="note">Se puede mantener A/C para cargar; si se carga al máximo no se puede bloquear.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Oculto 108 · Gran Guadaña de la Gran Serpiente</div><span class="tag tag-super">Súper</span></td><td class="cmd">↓ ← → + A/C<br>ó ↓ ← ↓ → + A/C</td><td class="cmd">B</td><td class="note">Se puede mantener A/C para cargar.</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Oculto 108 · Gran Guadaña de la Gran Serpiente (aéreo)</div><span class="tag tag-super">Súper</span></td><td class="cmd">En el aire: ↓ ← → + A/C<br>ó En el aire: ↓ ← ↓ → + A/C</td><td class="cmd">En el aire: ↓ + B</td><td class="note">—</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Súper Moves Ocultos</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Oculto 121 · Nube del Cielo Primordial</div><span class="tag tag-ultra">Oculto</span></td><td class="cmd">↓ → + O</td><td class="cmd">O</td><td class="note">—</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo Oculto 1111 · Origen de las Llamas</div><span class="tag tag-ultra">Oculto</span></td><td class="cmd">↓ ← + O</td><td class="cmd">← + O</td><td class="note">—</td></tr>
+        <tr><td><div class="gif-box">GIF</div></td><td><div class="move-name">Estilo 524 · Polvo Divino · Revisado</div><span class="tag tag-ultra">Oculto</span></td><td class="cmd">→ ↓ ← + O</td><td class="cmd">→ ↓ ← + O</td><td class="note">Agarre de comando; durante el modo Furia puede derivarse desde el Estilo 182.</td></tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<script>
+  function setMode(mode) {
+    document.getElementById('ml-blanco').classList.toggle('active', mode === 'blanco');
+    document.getElementById('ml-negro').classList.toggle('active', mode === 'negro');
+    document.querySelector('.mode-btn.blanco').classList.toggle('active', mode === 'blanco');
+    document.querySelector('.mode-btn.negro').classList.toggle('active', mode === 'negro');
+  }
+</script>
+
+</body>
+</html>

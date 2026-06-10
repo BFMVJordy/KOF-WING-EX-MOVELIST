@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RUGAL - KOF Wing EX</title>
+  <link rel="icon" type="image/png" href="kofwing_200-9.png">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Roboto Condensed', sans-serif; background: #0f1123; color: #cdd6f4; }
+
+    /* BANNER HERO */
+    .banner-hero {
+      width: 100%;
+      height: 480px;
+      position: relative;
+      overflow: hidden;
+    }
+    .banner-hero img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+    .banner-hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(15,17,35,0.10) 0%, rgba(15,17,35,0.90) 100%);
+    }
+    .banner-hero .hero-name {
+      position: absolute;
+      bottom: 40px;
+      left: 0; right: 0;
+      text-align: center;
+      z-index: 2;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 72px;
+      font-weight: 700;
+      letter-spacing: 10px;
+      color: #ffffff;
+      text-shadow: 0 0 40px rgba(255,255,255,0.4), 0 4px 24px rgba(0,0,0,0.8);
+      text-transform: uppercase;
+    }
+
+    /* SELECTOR DE MODO */
+    .mode-selector {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      padding: 20px 12px 0;
+      background: #0f1123;
+    }
+    .mode-btn {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      padding: 7px 22px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: uppercase;
+    }
+    .mode-btn.normal { background: #1e3a5f; color: #89b4fa; }
+    .mode-btn.normal.active, .mode-btn.normal:hover { background: #2a5080; color: #fff; box-shadow: 0 0 12px #89b4fa66; }
+    .mode-btn.oscuro { background: #3a1a1a; color: #f38ba8; }
+    .mode-btn.oscuro.active, .mode-btn.oscuro:hover { background: #5a2020; color: #fff; box-shadow: 0 0 12px #f38ba866; }
+
+    /* MOVELISTS */
+    .movelist { display: none; }
+    .movelist.active { display: block; }
+
+    /* ESTILOS COMPARTIDOS */
+    .banner-mini { background: #0f1123; padding: 20px 20px 16px; text-align: center; border-bottom: 2px solid #7c6fcd; }
+    .banner-mini .sub { font-size: 11px; color: #7c6fcd; letter-spacing: 3px; margin-bottom: 4px; font-family: 'Rajdhani', sans-serif; }
+    .banner-mini h1 { font-size: 22px; color: #ffffff; font-family: 'Rajdhani', sans-serif; font-weight: 700; letter-spacing: 2px; }
+    .banner-mini .mode-tag { display: inline-block; margin-top: 6px; font-size: 11px; padding: 3px 12px; border-radius: 999px; font-family: 'Rajdhani', sans-serif; letter-spacing: 2px; }
+    .mode-tag-normal { background: #1e3a5f; color: #89b4fa; }
+    .mode-tag-oscuro { background: #3a1a1a; color: #f38ba8; }
+    .banner-mini p { font-size: 12px; color: #6c7086; margin-top: 4px; }
+
+    .container { padding: 0 12px 24px; background: #0f1123; }
+    .section-title { font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 700; color: #7c6fcd; letter-spacing: 3px; padding: 18px 0 6px; text-transform: uppercase; border-bottom: 1px solid #1e2040; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 4px; }
+    thead tr { background: #181a2e; border-bottom: 1px solid #2a2d4a; }
+    thead th { padding: 8px 10px; text-align: left; color: #7c6fcd; font-weight: 700; font-size: 11px; font-family: 'Rajdhani', sans-serif; letter-spacing: 2px; text-transform: uppercase; }
+    tbody tr { border-bottom: 1px solid #181a2e; }
+    tbody tr:hover { background: #181a2e; }
+    tbody td { padding: 9px 10px; vertical-align: middle; }
+    .gif-box { width: 80px; height: 55px; background: #181a2e; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #45475a; text-align: center; border: 1px dashed #2a2d4a; }
+    .move-name { font-weight: 700; font-size: 14px; color: #cdd6f4; font-family: 'Rajdhani', sans-serif; }
+    .tag { font-size: 10px; padding: 2px 7px; border-radius: 999px; display: inline-block; margin-top: 3px; font-family: 'Roboto Condensed', sans-serif; font-weight: 700; }
+    .tag-especial { background: #2a1f4a; color: #cba6f7; }
+    .tag-super    { background: #3a1a1a; color: #f38ba8; }
+    .tag-ultra    { background: #1a2a1a; color: #a6e3a1; }
+    .tag-agarre   { background: #3a1a2a; color: #f5c2e7; }
+    .cmd  { font-family: monospace; font-size: 13px; color: #89dceb; line-height: 1.7; }
+    .note { font-size: 11px; color: #6c7086; font-style: italic; line-height: 1.5; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav style="position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:16px 40px; background:linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);">
+  <a href="index.html" style="display:flex; align-items:center; gap:12px; text-decoration:none;">
+    <img src="kofwing_200-9.png" style="width:40px; height:40px; object-fit:contain;">
+    <span style="font-family:'Rajdhani',sans-serif; font-size:20px; letter-spacing:3px; color:#fff; font-weight:700;">KOF WING EX</span>
+  </a>
+  <ul style="display:flex; gap:8px; list-style:none;">
+    <li><a href="../index.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Página principal</a></li>
+    <li><a href="../roster.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Roster</a></li>
+    <li><a href="../controles.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Controles</a></li>
+    <li><a href="../guia.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Guía</a></li>
+    <li><a href="../tierlist.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Tier List</a></li>
+    <li><a href="../acerca.html" style="color:rgba(255,255,255,0.8); text-decoration:none; font-size:13px; letter-spacing:2px; font-weight:600; text-transform:uppercase; padding:8px 16px; border-radius:4px;">Acerca</a></li>
+  </ul>
+</nav>
+
+<!-- BANNER HERO -->
+<div class="banner-hero">
+  <img src="https://e0.pxfuel.com/wallpapers/156/163/desktop-wallpaper-rugal-bernstein-snk-the-king-of-fighters-red-stone-background-grunge-art-snk-characters-the-king-of-fighters-characters-rugal-bernstein-snk.jpg" alt="Rugal Bernstein">
+  <!-- Pon aquí la URL o ruta de la imagen de Rugal -->
+  <div class="hero-name">RUGAL</div>
+</div>
+
+<!-- SELECTOR -->
+<div class="mode-selector">
+  <button class="mode-btn normal active" onclick="setMode('normal')">★ Modo Normal</button>
+  <button class="mode-btn oscuro" onclick="setMode('oscuro')">★ Modo Oscuro</button>
+</div>
+
+<!-- ===================== MODO NORMAL ===================== -->
+<div class="movelist active" id="ml-normal">
+  <div class="banner-mini">
+    <div class="sub">KOF WING EX</div>
+    <h1>RUGAL BERNSTEIN</h1>
+    <span class="mode-tag mode-tag-normal">★ MODO NORMAL</span>
+    <p>Guía de movimientos e instrucciones en español</p>
+  </div>
+  <div class="container">
+
+    <div class="section-title">Agarres</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Lanzamiento Mortal del Escorpión</div><span class="tag tag-agarre">Agarre · C</span></td>
+          <td class="cmd">Cerca, mantener → + C</td><td class="cmd">Cerca, mantener → + C</td>
+          <td class="note">—</td>
+        </tr>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Golpe del Escorpión</div><span class="tag tag-agarre">Agarre · D</span></td>
+          <td class="cmd">Cerca, mantener → + D</td><td class="cmd">Cerca, mantener → + D</td>
+          <td class="note">—</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Movimientos Particulares</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Doble Hacha</div><span class="tag tag-especial">Especial</span></td>
+          <td class="cmd">Mantener → + B</td><td class="cmd">Mantener → + B</td>
+          <td class="note">El segundo golpe es golpe medio.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Habilidades Especiales</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Puño Vendaval</div><span class="tag tag-especial">Especial</span></td>
+          <td class="cmd">↓ → + A/C</td><td class="cmd">→ + A/C</td>
+          <td class="note">Versión ligera y pesada.</td>
+        </tr>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Máquina de Gravedad</div><span class="tag tag-especial">Especial</span></td>
+          <td class="cmd">↓ ← + A/C</td><td class="cmd">↓ → + A/C</td>
+          <td class="note">Se puede mantener A/C para cargar.</td>
+        </tr>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Máquina de Gravedad (aéreo)</div><span class="tag tag-especial">Especial</span></td>
+          <td class="cmd">En el aire: ↓ → + A/C</td><td class="cmd">En el aire: ↓ → + A/C</td>
+          <td class="note">Se puede mantener A/C para cargar.</td>
+        </tr>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Aplastamiento Destructor</div><span class="tag tag-especial">Especial</span></td>
+          <td class="cmd">→ ↓ ← + A/C</td><td class="cmd">← + A/C</td>
+          <td class="note">Versión ligera y pesada.</td>
+        </tr>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Barrera Oscura</div><span class="tag tag-especial">Especial</span></td>
+          <td class="cmd">↓ → + B/D</td><td class="cmd">→ + D</td>
+          <td class="note">Refleja proyectiles.</td>
+        </tr>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Corte Genocida</div><span class="tag tag-especial">Especial</span></td>
+          <td class="cmd">→ ↓ → + B/D</td><td class="cmd">↓ → + B/D</td>
+          <td class="note">Versión ligera y pesada.</td>
+        </tr>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Lanzamiento Ascendente</div><span class="tag tag-especial">Especial</span></td>
+          <td class="cmd">← ↓ → + A/C</td><td class="cmd">← → + A/C</td>
+          <td class="note">Agarre de comando.</td>
+        </tr>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Teletransportación Fantasma</div><span class="tag tag-especial">Especial</span></td>
+          <td class="cmd">← ↓ → + B/D</td><td class="cmd">← → + B/D</td>
+          <td class="note">Se puede mantener B/D para cargar.</td>
+        </tr>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Onda Imperial · Revisada</div><span class="tag tag-especial">Especial</span></td>
+          <td class="cmd">→ ← ↓ → + A/C</td><td class="cmd">↓ ← + A/C</td>
+          <td class="note">Se puede mantener C para cargar; si se carga al máximo el 2.º golpe no se puede bloquear.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Súper Moves</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">RUGAL Asalto Mortal</div><span class="tag tag-super">Súper</span></td>
+          <td class="cmd">↓ → ↓ → + A/C</td><td class="cmd">A</td>
+          <td class="note">—</td>
+        </tr>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Grito de Muerte</div><span class="tag tag-super">Súper</span></td>
+          <td class="cmd">↓ → ↓ → + B/D</td><td class="cmd">B / ↓ ← + B</td>
+          <td class="note">Versión ligera y pesada; no se puede bloquear.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Súper Moves Ocultos</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Masacre del Terror</div><span class="tag tag-ultra">Oculto</span></td>
+          <td class="cmd">↓ → + O</td><td class="cmd">O</td>
+          <td class="note">—</td>
+        </tr>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Aplastamiento Celestial</div><span class="tag tag-ultra">Oculto</span></td>
+          <td class="cmd">↓ ← + O</td><td class="cmd">← + O</td>
+          <td class="note">Seguimiento universal.</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<!-- ===================== MODO OSCURO ===================== -->
+<div class="movelist" id="ml-oscuro">
+  <div class="banner-mini">
+    <div class="sub">KOF WING EX</div>
+    <h1>RUGAL OMEGA</h1>
+    <span class="mode-tag mode-tag-oscuro">★ MODO OSCURO</span>
+    <p>Guía de movimientos e instrucciones en español</p>
+  </div>
+  <div class="container">
+
+    <div class="section-title">Agarres</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Lanzamiento Mortal del Escorpión</div><span class="tag tag-agarre">Agarre · C</span></td>
+          <td class="cmd">Cerca, mantener → + C</td><td class="cmd">Cerca, mantener → + C</td>
+          <td class="note">—</td>
+        </tr>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Golpe del Escorpión</div><span class="tag tag-agarre">Agarre · D</span></td>
+          <td class="cmd">Cerca, mantener → + D</td><td class="cmd">Cerca, mantener → + D</td>
+          <td class="note">—</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Movimientos Particulares</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Doble Hacha</div><span class="tag tag-especial">Especial</span></td>
+          <td class="cmd">Mantener → + B</td><td class="cmd">Mantener → + B</td>
+          <td class="note">El segundo golpe es golpe medio.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Habilidades Especiales</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Puño Vendaval · Revisado</div><span class="tag tag-especial">Especial</span></td>
+          <td class="cmd">↓ → + A/C</td><td class="cmd">→ + A/C</td>
+          <td class="note">Versión ligera y pesada.</td>
+        </tr>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Impacto Oscuro</div><span class="tag tag-especial">Especial</span></td>
+          <td class="cmd">En el aire: ↓ → + C</td><td class="cmd">En el aire: → + C</td>
+          <td class="note">—</td>
+        </tr>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Aplastamiento Imperial</div><span class="tag tag-especial">Especial</span></td>
+          <td class="cmd">→ ↓ ← + A/C</td><td class="cmd">← + A/C</td>
+          <td class="note">Versión ligera y pesada.</td>
+        </tr>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Barrera Oscura</div><span class="tag tag-especial">Especial</span></td>
+          <td class="cmd">↓ → + B/D</td><td class="cmd">→ + D</td>
+          <td class="note">Refleja proyectiles.</td>
+        </tr>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Corte Genocida</div><span class="tag tag-especial">Especial</span></td>
+          <td class="cmd">→ ↓ → + B/D</td><td class="cmd">↓ → + B/D</td>
+          <td class="note">Versión ligera y pesada.</td>
+        </tr>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Golpe Despiadado</div><span class="tag tag-especial">Especial</span></td>
+          <td class="cmd">→ ↓ ← + B/D</td><td class="cmd">↓ ← + B/D</td>
+          <td class="note">Versión ligera y pesada; la versión pesada rebota al rival contra la pared.</td>
+        </tr>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Onda Imperial</div><span class="tag tag-especial">Especial</span></td>
+          <td class="cmd">→ ← ↓ → + A/C</td><td class="cmd">↓ ← + A/C</td>
+          <td class="note">Se puede mantener C para cargar; si se carga al máximo no se puede bloquear.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Súper Moves</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Aplastamiento Gigante</div><span class="tag tag-super">Súper</span></td>
+          <td class="cmd">↓ → ← + A/C<br>ó ↓ → ↓ ← + A/C</td><td class="cmd">A</td>
+          <td class="note">Seguimiento universal; seguimiento al rival caído.</td>
+        </tr>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Remate de Muerte Asombroso</div><span class="tag tag-super">Súper</span></td>
+          <td class="cmd">↓ → ↓ → + B/D</td><td class="cmd">B</td>
+          <td class="note">Seguimiento universal.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Súper Moves Ocultos</div>
+    <table>
+      <thead><tr><th style="width:90px">GIF</th><th>Nombre</th><th>Estándar</th><th>Fácil</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Masacre Sangrienta</div><span class="tag tag-ultra">Oculto</span></td>
+          <td class="cmd">↓ → + O</td><td class="cmd">O</td>
+          <td class="note">La esfera eléctrica no se puede bloquear; la onda azul y blanca permite seguimiento al rival caído.</td>
+        </tr>
+        <tr>
+          <td><div class="gif-box">GIF</div></td>
+          <td><div class="move-name">Tormenta Cortante</div><span class="tag tag-ultra">Oculto</span></td>
+          <td class="cmd">↓ ← + O</td><td class="cmd">← + O</td>
+          <td class="note">Seguimiento universal; no se puede bloquear.</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<script>
+  function setMode(mode) {
+    document.getElementById('ml-normal').classList.toggle('active', mode === 'normal');
+    document.getElementById('ml-oscuro').classList.toggle('active', mode === 'oscuro');
+    document.querySelector('.mode-btn.normal').classList.toggle('active', mode === 'normal');
+    document.querySelector('.mode-btn.oscuro').classList.toggle('active', mode === 'oscuro');
+  }
+</script>
+
+</body>
+</html>
